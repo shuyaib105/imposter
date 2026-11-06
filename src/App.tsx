@@ -31,6 +31,7 @@ import {
 import { sound } from './utils/sound';
 import { calculateWinningLogic } from './game/winningLogic';
 import { pickWordPair } from './game/wordSelection';
+import { loadRecentWordIds, rememberWordId } from './game/wordHistory';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -72,8 +73,11 @@ export default function App() {
   const [offlinePlayers, setOfflinePlayers] = useState<Player[]>([]);
   const [offlineImposterId, setOfflineImposterId] = useState<string>('');
   const [offlineSecrets, setOfflineSecrets] = useState<Record<string, string>>({});
+  const [offlineSecretsAlt, setOfflineSecretsAlt] = useState<Record<string, string>>({});
   const [offlineMajorityWord, setOfflineMajorityWord] = useState('');
   const [offlineImposterWord, setOfflineImposterWord] = useState('');
+  const [offlineMajorityWordAlt, setOfflineMajorityWordAlt] = useState('');
+  const [offlineImposterWordAlt, setOfflineImposterWordAlt] = useState('');
   const [offlineVoteCounts, setOfflineVoteCounts] = useState<Record<string, number>>({});
   const [offlineVotes, setOfflineVotes] = useState<Record<string, string>>({});
   const [offlineWinnerStatus, setOfflineWinnerStatus] = useState<WinnerStatus>('NONE');
@@ -90,6 +94,7 @@ export default function App() {
   const [onlineRoom, setOnlineRoom] = useState<OnlineRoomData | null>(null);
   const [onlinePlayers, setOnlinePlayers] = useState<Player[]>([]);
   const [myOnlineSecretWord, setMyOnlineSecretWord] = useState<string>('');
+  const [myOnlineSecretWordAlt, setMyOnlineSecretWordAlt] = useState<string>('');
 
   // Prevents the same voting round from being finalized repeatedly
   const votingFinalizeRef = useRef<string>('');
@@ -210,7 +215,9 @@ export default function App() {
         if (snap.exists()) {
           const sData = snap.data();
           const word = settings.language === 'bn' ? sData.secretWordBn : sData.secretWord;
+          const altWord = settings.language === 'bn' ? sData.secretWord : sData.secretWordBn;
           setMyOnlineSecretWord(word || sData.secretWord);
+          setMyOnlineSecretWordAlt(altWord || '');
         }
       });
     }
@@ -250,11 +257,15 @@ export default function App() {
     const pair = pickWordPair(allWordPairs, {
       preferredCategories: settings.preferredCategories,
       difficulty: settings.defaultDifficulty,
+      excludeIds: loadRecentWordIds(),
     });
     if (!pair) return;
+    rememberWordId(pair.id);
 
     const majorityWord = settings.language === 'bn' ? pair.wordABn : pair.wordA;
     const imposterWord = settings.language === 'bn' ? pair.wordBBn : pair.wordB;
+    const majorityWordAlt = settings.language === 'bn' ? pair.wordA : pair.wordABn;
+    const imposterWordAlt = settings.language === 'bn' ? pair.wordB : pair.wordBBn;
 
     // Pick exactly one Imposter
     const imposterIdx = Math.floor(Math.random() * players.length);
@@ -262,13 +273,19 @@ export default function App() {
     setOfflineImposterId(imposterP.id);
     setOfflineMajorityWord(majorityWord);
     setOfflineImposterWord(imposterWord);
+    setOfflineMajorityWordAlt(majorityWordAlt);
+    setOfflineImposterWordAlt(imposterWordAlt);
 
-    // Distribute secrets
+    // Distribute secrets (primary word + the other-language version)
     const secretMap: Record<string, string> = {};
+    const secretAltMap: Record<string, string> = {};
     players.forEach((p) => {
-      secretMap[p.id] = p.id === imposterP.id ? imposterWord : majorityWord;
+      const isImp = p.id === imposterP.id;
+      secretMap[p.id] = isImp ? imposterWord : majorityWord;
+      secretAltMap[p.id] = isImp ? imposterWordAlt : majorityWordAlt;
     });
     setOfflineSecrets(secretMap);
+    setOfflineSecretsAlt(secretAltMap);
 
     setPhase('OFFLINE_WORD_REVEAL');
   };
@@ -434,6 +451,7 @@ export default function App() {
             settings={settings}
             players={offlinePlayers}
             playerSecrets={offlineSecrets}
+            playerSecretAlts={offlineSecretsAlt}
             onAllRevealed={() => setPhase('OFFLINE_DISCUSSION')}
           />
         )}
@@ -464,6 +482,8 @@ export default function App() {
             imposterId={offlineImposterId}
             majorityWord={offlineMajorityWord}
             imposterWord={offlineImposterWord}
+            majorityWordAlt={offlineMajorityWordAlt}
+            imposterWordAlt={offlineImposterWordAlt}
             voteCounts={offlineVoteCounts}
             winnerStatus={offlineWinnerStatus}
             votes={offlineVotes}
@@ -525,6 +545,7 @@ export default function App() {
             settings={settings}
             roomData={onlineRoom}
             secretWord={myOnlineSecretWord}
+            secretWordAlt={myOnlineSecretWordAlt}
             myPlayer={myOnlinePlayer}
             isHost={onlineRoom.hostId === myPlayerId}
           />
@@ -538,6 +559,7 @@ export default function App() {
             myPlayer={myOnlinePlayer}
             players={onlinePlayers}
             secretWord={myOnlineSecretWord}
+            secretWordAlt={myOnlineSecretWordAlt}
           />
         )}
 
@@ -566,6 +588,16 @@ export default function App() {
               settings.language === 'bn'
                 ? onlineRoom.imposterWordBn || onlineRoom.imposterWord || ''
                 : onlineRoom.imposterWord || ''
+            }
+            majorityWordAlt={
+              settings.language === 'bn'
+                ? onlineRoom.majorityWord || ''
+                : onlineRoom.majorityWordBn || ''
+            }
+            imposterWordAlt={
+              settings.language === 'bn'
+                ? onlineRoom.imposterWord || ''
+                : onlineRoom.imposterWordBn || ''
             }
             voteCounts={
               // Compute votes from players voteTargetId

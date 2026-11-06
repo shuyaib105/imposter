@@ -8,6 +8,7 @@ interface OfflineRevealProps {
   settings: GameSettings;
   players: Player[];
   playerSecrets: Record<string, string>; // playerId -> secret word
+  playerSecretAlts?: Record<string, string>; // playerId -> other-language word
   onAllRevealed: () => void;
 }
 
@@ -15,6 +16,7 @@ export default function OfflineReveal({
   settings,
   players,
   playerSecrets,
+  playerSecretAlts,
   onAllRevealed,
 }: OfflineRevealProps) {
   const t = TRANSLATIONS[settings.language];
@@ -25,6 +27,8 @@ export default function OfflineReveal({
 
   const currentPlayer = players[currentIndex];
   const currentSecret = playerSecrets[currentPlayer.id];
+  const currentSecretAlt = playerSecretAlts?.[currentPlayer.id] || '';
+  const showSecretAlt = !!currentSecretAlt && currentSecretAlt !== currentSecret;
 
   // 5-second countdown timer when revealed
   useEffect(() => {
@@ -142,6 +146,11 @@ export default function OfflineReveal({
               <span className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100 to-white tracking-wide">
                 {currentSecret}
               </span>
+              {showSecretAlt && (
+                <span className="block mt-1.5 text-base font-semibold text-slate-400 font-bangla">
+                  {currentSecretAlt}
+                </span>
+              )}
             </div>
 
             {/* Visual timer countdown bar */}

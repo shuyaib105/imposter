@@ -9,6 +9,7 @@ interface OnlineRevealProps {
   settings: GameSettings;
   roomData: OnlineRoomData;
   secretWord: string;
+  secretWordAlt?: string;
   myPlayer: Player;
   isHost: boolean;
 }
@@ -17,6 +18,7 @@ export default function OnlineReveal({
   settings,
   roomData,
   secretWord,
+  secretWordAlt,
   myPlayer,
   isHost,
 }: OnlineRevealProps) {
@@ -133,6 +135,11 @@ export default function OnlineReveal({
               <span className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100 to-white tracking-wide">
                 {secretWord || t.loadingWord}
               </span>
+              {secretWordAlt && secretWordAlt !== secretWord && (
+                <span className="block mt-1.5 text-base font-semibold text-slate-400 font-bangla">
+                  {secretWordAlt}
+                </span>
+              )}
             </div>
 
             {/* Visual timer countdown bar */}

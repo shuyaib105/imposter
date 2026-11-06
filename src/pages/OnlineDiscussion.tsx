@@ -20,6 +20,7 @@ interface OnlineDiscussionProps {
   myPlayer: Player;
   players: Player[];
   secretWord: string;
+  secretWordAlt?: string;
 }
 
 export default function OnlineDiscussion({
@@ -28,6 +29,7 @@ export default function OnlineDiscussion({
   myPlayer,
   players,
   secretWord,
+  secretWordAlt,
 }: OnlineDiscussionProps) {
   const t = TRANSLATIONS[settings.language];
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -107,8 +109,13 @@ export default function OnlineDiscussion({
             className="flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 rounded-xl bg-purple-950/60 border border-purple-500/30 text-purple-300 hover:text-white transition cursor-pointer"
           >
             {showSecretInHeader ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-            <span>
-              {showSecretInHeader ? secretWord : t.peekMyWord}
+            <span className="flex flex-col items-start leading-tight text-left">
+              <span>{showSecretInHeader ? secretWord : t.peekMyWord}</span>
+              {showSecretInHeader && secretWordAlt && secretWordAlt !== secretWord && (
+                <span className="text-[10px] text-purple-200/70 font-bangla">
+                  {secretWordAlt}
+                </span>
+              )}
             </span>
           </button>
         </div>

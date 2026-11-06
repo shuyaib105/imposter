@@ -3,6 +3,7 @@ import { OnlineRoomData, Player, GameSettings, WordPair } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { CATEGORIES, CUSTOM_CATEGORY_ID } from '../data/words';
 import { pickWordPair } from '../game/wordSelection';
+import { loadRecentWordIds, rememberWordId } from '../game/wordHistory';
 import { sound } from '../utils/sound';
 import {
   togglePlayerReady,
@@ -178,12 +179,14 @@ export default function OnlineLobby({
       const pair = pickWordPair(allWordPairs, {
         categories: selectedCategories,
         difficulty: roomData.difficulty,
+        excludeIds: loadRecentWordIds(),
       });
       if (!pair) {
         setErrorMsg(t.noWordPair);
         setIsStarting(false);
         return;
       }
+      rememberWordId(pair.id);
 
       await startOnlineGame(roomData.id, pair, players);
     } catch (e) {

@@ -11,6 +11,8 @@ interface GameResultsProps {
   imposterId: string;
   majorityWord: string;
   imposterWord: string;
+  majorityWordAlt?: string;
+  imposterWordAlt?: string;
   voteCounts: Record<string, number>;
   winnerStatus: WinnerStatus;
   myPlayerId?: string;
@@ -26,6 +28,8 @@ export default function GameResults({
   imposterId,
   majorityWord,
   imposterWord,
+  majorityWordAlt,
+  imposterWordAlt,
   voteCounts,
   winnerStatus,
   myPlayerId,
@@ -132,6 +136,11 @@ export default function GameResults({
           <span className="text-base font-extrabold text-white block">
             {majorityWord}
           </span>
+          {majorityWordAlt && majorityWordAlt !== majorityWord && (
+            <span className="text-xs font-semibold text-slate-400 block font-bangla">
+              {majorityWordAlt}
+            </span>
+          )}
         </div>
 
         <div className="p-3.5 rounded-2xl bg-slate-900/70 border border-red-500/30 text-center space-y-1">
@@ -141,6 +150,11 @@ export default function GameResults({
           <span className="text-base font-extrabold text-red-200 block">
             {imposterWord}
           </span>
+          {imposterWordAlt && imposterWordAlt !== imposterWord && (
+            <span className="text-xs font-semibold text-slate-400 block font-bangla">
+              {imposterWordAlt}
+            </span>
+          )}
         </div>
       </div>
 
