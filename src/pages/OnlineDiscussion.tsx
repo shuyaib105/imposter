@@ -129,30 +129,8 @@ export default function OnlineDiscussion({
           </button>
         </div>
 
-        {showCallConfirm && (
-          <div className="p-3.5 rounded-2xl bg-slate-900 border border-purple-500/50 space-y-2 animate-scaleUp">
-            <p className="text-xs text-slate-200 text-center font-bold">
-              {t.callForVoteConfirm}
-            </p>
-            {errorMsg && (
-              <p className="text-[11px] text-red-300 text-center">{errorMsg}</p>
-            )}
-            <div className="flex gap-2">
-              <button
-                onClick={() => setShowCallConfirm(false)}
-                className="flex-1 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs uppercase cursor-pointer"
-              >
-                {t.cancel}
-              </button>
-              <button
-                onClick={handleCallForVote}
-                disabled={isCallingVote}
-                className="flex-1 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs uppercase cursor-pointer shadow-lg"
-              >
-                {isCallingVote ? t.calling : t.confirm}
-              </button>
-            </div>
-          </div>
+        {errorMsg && !showCallConfirm && (
+          <p className="text-[11px] text-red-300 text-center">{errorMsg}</p>
         )}
       </div>
 
@@ -252,6 +230,47 @@ export default function OnlineDiscussion({
                   <span className="font-bold truncate">{p.name}</span>
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Separate confirmation dialog — calling the vote closes discussion for everyone */}
+      {showCallConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm px-6">
+          <div
+            role="dialog"
+            aria-modal="true"
+            className="w-full max-w-xs p-5 rounded-3xl bg-slate-900 border border-purple-500/50 space-y-4 shadow-2xl animate-scaleUp"
+          >
+            <div className="w-12 h-12 mx-auto rounded-2xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center">
+              <Vote className="w-6 h-6 text-purple-300" />
+            </div>
+            <p className="text-sm text-white text-center font-bold">
+              {t.callForVoteConfirm}
+            </p>
+            {errorMsg && (
+              <p className="text-[11px] text-red-300 text-center">{errorMsg}</p>
+            )}
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  sound.playClick();
+                  setShowCallConfirm(false);
+                  setErrorMsg('');
+                }}
+                disabled={isCallingVote}
+                className="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs uppercase cursor-pointer disabled:opacity-60"
+              >
+                {t.cancel}
+              </button>
+              <button
+                onClick={handleCallForVote}
+                disabled={isCallingVote}
+                className="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs uppercase cursor-pointer shadow-lg disabled:opacity-60"
+              >
+                {isCallingVote ? t.calling : t.confirm}
+              </button>
             </div>
           </div>
         </div>
