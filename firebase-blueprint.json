@@ -1,0 +1,100 @@
+{
+  "entities": {
+    "Room": {
+      "title": "Room",
+      "description": "Multiplayer game room containing room settings, players, game phase, and voting counts",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 6 },
+        "hostId": { "type": "string", "maxLength": 128 },
+        "hostName": { "type": "string", "maxLength": 64 },
+        "createdAt": { "type": "string" },
+        "mode": { "type": "string", "enum": ["CHAT_ON", "CHAT_OFF"] },
+        "phase": { "type": "string", "enum": ["LOBBY", "WORD_REVEAL", "DISCUSSION", "VOTING", "RESULTS"] },
+        "category": { "type": "string", "maxLength": 64 },
+        "difficulty": { "type": "string", "enum": ["EASY", "MEDIUM", "HARD"] },
+        "round": { "type": "number" },
+        "majorityWord": { "type": "string", "maxLength": 100 },
+        "imposterWord": { "type": "string", "maxLength": 100 },
+        "imposterId": { "type": "string", "maxLength": 128 },
+        "winnerStatus": { "type": "string", "enum": ["GROUP_WIN", "IMPOSTER_WIN", "TIE", "NONE"] },
+        "totalVoted": { "type": "number" }
+      },
+      "required": ["id", "hostId", "phase"]
+    },
+    "Player": {
+      "title": "Player",
+      "description": "A player who joined the multiplayer room",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 64 },
+        "avatar": { "type": "string", "maxLength": 128 },
+        "isHost": { "type": "boolean" },
+        "isReady": { "type": "boolean" },
+        "isOnline": { "type": "boolean" },
+        "hasVoted": { "type": "boolean" },
+        "lastActive": { "type": "string" }
+      },
+      "required": ["id", "name"]
+    },
+    "SecretAssignment": {
+      "title": "SecretAssignment",
+      "description": "Private secret word assigned to a specific player in a room",
+      "type": "object",
+      "properties": {
+        "playerId": { "type": "string", "maxLength": 128 },
+        "secretWord": { "type": "string", "maxLength": 100 },
+        "isImposter": { "type": "boolean" }
+      },
+      "required": ["playerId", "secretWord"]
+    },
+    "Vote": {
+      "title": "Vote",
+      "description": "Vote cast by a player pointing to target player",
+      "type": "object",
+      "properties": {
+        "voterId": { "type": "string", "maxLength": 128 },
+        "targetId": { "type": "string", "maxLength": 128 },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["voterId", "targetId"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "In-room chat message sent during discussion phase",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "senderId": { "type": "string", "maxLength": 128 },
+        "senderName": { "type": "string", "maxLength": 64 },
+        "senderAvatar": { "type": "string", "maxLength": 128 },
+        "text": { "type": "string", "maxLength": 500 },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "senderId", "text"]
+    }
+  },
+  "firestore": {
+    "/rooms/{roomId}": {
+      "schema": "Room",
+      "description": "Game room metadata, round state and phase"
+    },
+    "/rooms/{roomId}/players/{playerId}": {
+      "schema": "Player",
+      "description": "Players participating in room"
+    },
+    "/rooms/{roomId}/secrets/{playerId}": {
+      "schema": "SecretAssignment",
+      "description": "Private secret words distributed to players"
+    },
+    "/rooms/{roomId}/votes/{voterId}": {
+      "schema": "Vote",
+      "description": "Private votes cast by players"
+    },
+    "/rooms/{roomId}/messages/{messageId}": {
+      "schema": "ChatMessage",
+      "description": "Real-time in-game discussion chat messages"
+    }
+  }
+}
