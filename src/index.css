@@ -173,19 +173,15 @@ html.light [class*="from-pink-500"] .text-white {
   color: #ffffff;
 }
 
-/* Anek Bangla for every piece of Bangla UI text */
-html[lang="bn"] body,
-html[lang="bn"] .font-sans,
-html[lang="bn"] .font-mono,
-html[lang="bn"] button,
-html[lang="bn"] input,
-html[lang="bn"] select,
-html[lang="bn"] textarea {
-  font-family: "Anek Bangla", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-}
-
-/* Bangla subtitle shown under a word even when the UI is in English */
-.font-bangla {
+/* Anek Bangla app-wide, for both English and Bangla letters */
+body,
+.font-sans,
+.font-mono,
+.font-bangla,
+button,
+input,
+select,
+textarea {
   font-family: "Anek Bangla", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
