@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "description": "Imposter — a bilingual (English/Bangla) party game with offline pass-and-play and real-time online multiplayer rooms.",
   "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "build": "vite build",
