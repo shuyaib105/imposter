@@ -4,14 +4,13 @@ import { TRANSLATIONS } from '../data/translations';
 import { CATEGORIES, CUSTOM_CATEGORY_ID } from '../data/words';
 import { sound } from '../utils/sound';
 import { createOnlineRoom, joinOnlineRoom } from '../services/onlineEngine';
-import AvatarPicker from '../components/AvatarPicker';
 import { PlusCircle, LogIn, ArrowRight, ShieldAlert, MessageSquare, Radio } from 'lucide-react';
 
 interface OnlineSelectionProps {
   settings: GameSettings;
   customWords: WordPair[];
   profile: UserProfile;
-  onSaveProfile: (profile: UserProfile) => void;
+  onEditProfile: () => void;
   onRoomJoined: (roomCode: string, playerId: string) => void;
   onBack: () => void;
 }
@@ -20,7 +19,7 @@ export default function OnlineSelection({
   settings,
   customWords,
   profile,
-  onSaveProfile,
+  onEditProfile,
   onRoomJoined,
   onBack,
 }: OnlineSelectionProps) {
@@ -28,8 +27,6 @@ export default function OnlineSelection({
   const [tab, setTab] = useState<'CREATE' | 'JOIN'>('CREATE');
 
   // Create form state
-  const [hostName, setHostName] = useState(profile.name);
-  const [hostAvatar, setHostAvatar] = useState(profile.avatar);
   const [onlineMode, setOnlineMode] = useState<OnlineModeType>('CHAT_ON');
   const [category, setCategory] = useState(CATEGORIES[0].id);
   const [difficulty, setDifficulty] = useState<GameDifficulty>(
@@ -38,8 +35,6 @@ export default function OnlineSelection({
 
   // Join form state
   const [joinCode, setJoinCode] = useState('');
-  const [joinName, setJoinName] = useState(profile.name);
-  const [joinAvatar, setJoinAvatar] = useState(profile.avatar);
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -59,20 +54,27 @@ export default function OnlineSelection({
       : []),
   ];
 
+  const profileName = profile.name.trim();
+  const profileReady = profileName.length > 0;
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
-    const name = hostName.trim();
-    if (!name) {
-      setErrorMsg(t.enterName);
+    if (!profileReady) {
+      setErrorMsg(t.profileRequired);
       return;
     }
 
     try {
       setIsLoading(true);
       sound.playClick();
-      const res = await createOnlineRoom(name, hostAvatar, onlineMode, category, difficulty);
-      onSaveProfile({ name, avatar: hostAvatar });
+      const res = await createOnlineRoom(
+        profileName,
+        profile.avatar,
+        onlineMode,
+        category,
+        difficulty
+      );
       onRoomJoined(res.roomCode, res.playerId);
     } catch (err) {
       console.error(err);
@@ -85,22 +87,21 @@ export default function OnlineSelection({
   const handleJoin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
-    const name = joinName.trim();
     const code = joinCode.trim().toUpperCase();
 
     if (!code || code.length !== 6) {
       setErrorMsg(t.roomCodeLength);
       return;
     }
-    if (!name) {
-      setErrorMsg(t.enterName);
+    if (!profileReady) {
+      setErrorMsg(t.profileRequired);
       return;
     }
 
     try {
       setIsLoading(true);
       sound.playClick();
-      const res = await joinOnlineRoom(code, name, joinAvatar);
+      const res = await joinOnlineRoom(code, profileName, profile.avatar);
       if (!res.success) {
         if (res.error === 'ROOM_NOT_FOUND') setErrorMsg(t.roomNotFound);
         else if (res.error === 'ROOM_FULL') setErrorMsg(t.roomFull);
@@ -110,7 +111,6 @@ export default function OnlineSelection({
         return;
       }
       if (res.playerId) {
-        onSaveProfile({ name, avatar: joinAvatar });
         onRoomJoined(code, res.playerId);
       }
     } catch (err) {
@@ -180,6 +180,35 @@ export default function OnlineSelection({
         </button>
       </div>
 
+      {/* Identity comes from the saved profile — edit it from the profile screen only */}
+      <div className="flex items-center justify-between gap-3 p-3 rounded-2xl bg-slate-900/80 border border-slate-800 mb-5">
+        <div className="flex items-center gap-3 min-w-0">
+          <span className="w-11 h-11 rounded-xl bg-slate-950 border border-purple-500/30 flex items-center justify-center text-xl shrink-0">
+            {profile.avatar}
+          </span>
+          <div className="min-w-0">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block">
+              {t.myProfile}
+            </span>
+            <span className="text-sm font-black text-white block truncate">
+              {profileName || t.setUpProfile}
+            </span>
+            {!profileReady && (
+              <span className="text-[10px] font-mono text-amber-300 block">
+                {t.profileRequired}
+              </span>
+            )}
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={onEditProfile}
+          className="shrink-0 px-3 py-1.5 rounded-lg border border-purple-500/30 bg-purple-950/40 text-purple-300 hover:text-white text-[10px] font-mono uppercase tracking-wider transition cursor-pointer"
+        >
+          {t.editProfile}
+        </button>
+      </div>
+
       {errorMsg && (
         <div className="mb-4 p-3 rounded-xl bg-red-950/50 border border-red-500/40 text-red-300 text-xs flex items-center gap-2 animate-shake">
           <ShieldAlert className="w-4 h-4 shrink-0 text-red-400" />
@@ -190,34 +219,6 @@ export default function OnlineSelection({
       {/* CREATE ROOM FORM */}
       {tab === 'CREATE' && (
         <form onSubmit={handleCreate} className="space-y-4">
-          <div>
-            <label className="text-xs font-mono uppercase text-slate-400 block mb-1.5">
-              {t.yourName}
-            </label>
-            <input
-              type="text"
-              required
-              maxLength={20}
-              value={hostName}
-              onChange={(e) => setHostName(e.target.value)}
-              placeholder={t.nicknamePlaceholder}
-              className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-purple-500 transition"
-            />
-          </div>
-
-          <div>
-            <label className="text-xs font-mono uppercase text-slate-400 block mb-1.5">
-              {t.chooseAvatar}
-            </label>
-            <AvatarPicker
-              value={hostAvatar}
-              onChange={(av) => {
-                sound.playClick();
-                setHostAvatar(av);
-              }}
-            />
-          </div>
-
           {/* Mode Switcher: Mode A (Chat On) vs Mode B (Chat Off) */}
           <div>
             <label className="text-xs font-mono uppercase text-slate-400 block mb-1.5">
@@ -299,8 +300,8 @@ export default function OnlineSelection({
 
           <button
             type="submit"
-            disabled={isLoading}
-            className="w-full py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:scale-[1.02] text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl shadow-purple-900/30 transition cursor-pointer mt-2"
+            disabled={isLoading || !profileReady}
+            className="w-full py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:scale-[1.02] text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl shadow-purple-900/30 transition cursor-pointer mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span>{isLoading ? t.creatingRoom : t.createRoom}</span>
             <ArrowRight className="w-4 h-4" />
@@ -326,37 +327,9 @@ export default function OnlineSelection({
             />
           </div>
 
-          <div>
-            <label className="text-xs font-mono uppercase text-slate-400 block mb-1.5">
-              {t.yourName}
-            </label>
-            <input
-              type="text"
-              required
-              maxLength={20}
-              value={joinName}
-              onChange={(e) => setJoinName(e.target.value)}
-              placeholder={t.joinNamePlaceholder}
-              className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-purple-500 transition"
-            />
-          </div>
-
-          <div>
-            <label className="text-xs font-mono uppercase text-slate-400 block mb-1.5">
-              {t.chooseAvatar}
-            </label>
-            <AvatarPicker
-              value={joinAvatar}
-              onChange={(av) => {
-                sound.playClick();
-                setJoinAvatar(av);
-              }}
-            />
-          </div>
-
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || !profileReady}
             className="w-full py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:scale-[1.02] text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl shadow-purple-900/30 transition cursor-pointer mt-2"
           >
             <span>{isLoading ? t.joiningRoom : t.joinButton}</span>

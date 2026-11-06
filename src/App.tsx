@@ -60,6 +60,7 @@ function readSession(key: string): string {
 
 export default function App() {
   const [phase, setPhase] = useState<GamePhase>('HOME');
+  const [profileReturnPhase, setProfileReturnPhase] = useState<GamePhase>('HOME');
   const [settings, setSettings] = useState<GameSettings>(loadSettings);
   const [profile, setProfile] = useState<UserProfile>(loadProfile);
   const [customWords, setCustomWords] = useState<WordPair[]>(loadCustomWords);
@@ -354,7 +355,10 @@ export default function App() {
           <HomePage
             settings={settings}
             profile={profile}
-            onSelectProfile={() => setPhase('PROFILE')}
+            onSelectProfile={() => {
+              setProfileReturnPhase('HOME');
+              setPhase('PROFILE');
+            }}
             onSelectOffline={() => setPhase('OFFLINE_SETUP')}
             onSelectOnline={() => setPhase('ONLINE_ROOM_SELECTION')}
             onSelectHowToPlay={() => setPhase('HOW_TO_PLAY')}
@@ -370,7 +374,7 @@ export default function App() {
             settings={settings}
             profile={profile}
             onSave={handleSaveProfile}
-            onBack={() => setPhase('HOME')}
+            onBack={() => setPhase(profileReturnPhase)}
           />
         )}
 
@@ -408,7 +412,6 @@ export default function App() {
         {phase === 'OFFLINE_SETUP' && (
           <OfflineSetup
             settings={settings}
-            profile={profile}
             onStartGame={handleStartOfflineGame}
             onBack={() => setPhase('HOME')}
           />
@@ -464,7 +467,10 @@ export default function App() {
             settings={settings}
             customWords={customWords}
             profile={profile}
-            onSaveProfile={handleSaveProfile}
+            onEditProfile={() => {
+              setProfileReturnPhase('ONLINE_ROOM_SELECTION');
+              setPhase('PROFILE');
+            }}
             onRoomJoined={handleOnlineRoomJoined}
             onBack={() => setPhase('HOME')}
           />
