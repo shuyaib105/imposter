@@ -57,6 +57,7 @@ export interface GameSettings {
   soundEnabled: boolean;
   musicEnabled: boolean;
   animationsEnabled: boolean;
+  darkMode: boolean;
   defaultDifficulty: GameDifficulty;
   preferredCategories: string[];
   maxPlayers: number;
@@ -94,6 +95,8 @@ export interface OnlineRoomData {
   mode: OnlineModeType;
   phase: 'LOBBY' | 'WORD_REVEAL' | 'DISCUSSION' | 'VOTING' | 'RESULTS';
   category: string;
+  /** Selected category ids for this round. 'ALL' means every category. */
+  categories?: string[];
   difficulty: GameDifficulty;
   round: number;
   majorityWord?: string;

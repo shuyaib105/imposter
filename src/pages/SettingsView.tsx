@@ -11,6 +11,8 @@ import {
   Sparkles,
   Zap,
   Check,
+  Moon,
+  Sun,
 } from 'lucide-react';
 
 interface SettingsModalProps {
@@ -47,6 +49,14 @@ export default function SettingsView({
   const handleToggleAnimations = () => {
     sound.playClick();
     const updated = { ...current, animationsEnabled: !current.animationsEnabled };
+    setCurrent(updated);
+    onUpdateSettings(updated);
+    saveSettings(updated);
+  };
+
+  const handleToggleTheme = () => {
+    sound.playClick();
+    const updated = { ...current, darkMode: !current.darkMode };
     setCurrent(updated);
     onUpdateSettings(updated);
     saveSettings(updated);
@@ -127,6 +137,37 @@ export default function SettingsView({
           </div>
         </div>
 
+        {/* Appearance */}
+        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
+              {current.darkMode ? (
+                <Moon className="w-4 h-4 text-purple-400" />
+              ) : (
+                <Sun className="w-4 h-4 text-amber-400" />
+              )}
+              <div>
+                <span className="block">{t.darkMode}</span>
+              </div>
+            </div>
+            <button
+              onClick={handleToggleTheme}
+              role="switch"
+              aria-checked={current.darkMode}
+              aria-label={t.darkMode}
+              className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer ${
+                current.darkMode ? 'bg-purple-600' : 'bg-slate-800'
+              }`}
+            >
+              <div
+                className={`w-5 h-5 rounded-full bg-[#fff] transition-transform absolute top-0.5 ${
+                  current.darkMode ? 'translate-x-6' : 'translate-x-0.5'
+                }`}
+              />
+            </button>
+          </div>
+        </div>
+
         {/* Audio / FX switches */}
         <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-3">
           <div className="flex items-center justify-between">
@@ -141,7 +182,7 @@ export default function SettingsView({
               }`}
             >
               <div
-                className={`w-5 h-5 rounded-full bg-white transition-transform absolute top-0.5 ${
+                className={`w-5 h-5 rounded-full bg-[#fff] transition-transform absolute top-0.5 ${
                   current.soundEnabled ? 'translate-x-6' : 'translate-x-0.5'
                 }`}
               />
@@ -160,7 +201,7 @@ export default function SettingsView({
               }`}
             >
               <div
-                className={`w-5 h-5 rounded-full bg-white transition-transform absolute top-0.5 ${
+                className={`w-5 h-5 rounded-full bg-[#fff] transition-transform absolute top-0.5 ${
                   current.animationsEnabled ? 'translate-x-6' : 'translate-x-0.5'
                 }`}
               />

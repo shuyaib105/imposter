@@ -4,6 +4,8 @@ import { CUSTOM_CATEGORY_ID } from '../data/words';
 export interface WordSelectionOptions {
   /** Exact category id. Use CUSTOM_CATEGORY_ID for user-created pairs. */
   category?: string | null;
+  /** Multiple category ids. 'ALL' (or an empty list) means every category. */
+  categories?: string[] | null;
   difficulty?: GameDifficulty | null;
   /** Used in offline games: prefer these categories. */
   preferredCategories?: string[];
@@ -21,10 +23,16 @@ export function pickWordPair(
 ): WordPair | null {
   if (pairs.length === 0) return null;
 
-  const { category, difficulty, preferredCategories } = options;
+  const { category, categories, difficulty, preferredCategories } = options;
   let pool = pairs;
 
-  if (category && category !== 'ALL') {
+  if (categories && categories.length > 0 && !categories.includes('ALL')) {
+    const selected = new Set(categories);
+    const byCategories = pool.filter((p) =>
+      p.isCustom ? selected.has(CUSTOM_CATEGORY_ID) : selected.has(p.category)
+    );
+    if (byCategories.length > 0) pool = byCategories;
+  } else if (category && category !== 'ALL') {
     const byCategory =
       category === CUSTOM_CATEGORY_ID
         ? pool.filter((p) => p.isCustom)

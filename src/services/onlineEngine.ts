@@ -60,10 +60,11 @@ export async function createOnlineRoom(
   hostName: string,
   hostAvatar: string,
   mode: 'CHAT_ON' | 'CHAT_OFF',
-  category: string,
+  categories: string[],
   difficulty: 'EASY' | 'MEDIUM' | 'HARD'
 ): Promise<{ roomCode: string; playerId: string }> {
   const playerId = await ensurePlayerIdentity();
+  const selectedCategories = categories.length > 0 ? categories : ['ALL'];
 
   // Never reuse an existing room code: a collision would overwrite another
   // group's live game.
@@ -86,7 +87,8 @@ export async function createOnlineRoom(
     createdAt: now,
     mode,
     phase: 'LOBBY',
-    category,
+    category: selectedCategories[0],
+    categories: selectedCategories,
     difficulty,
     round: 1,
     totalVoted: 0,
@@ -433,7 +435,11 @@ export async function removePlayerFromRoom(roomCode: string, playerId: string) {
   } catch {}
 }
 
-/** Lets the host switch the category between rounds. 'ALL' means every category. */
-export async function setOnlineRoomCategory(roomCode: string, category: string) {
-  await updateDoc(doc(db, 'rooms', roomCode), { category });
+/** Lets the host switch the category selection between rounds. 'ALL' means every category. */
+export async function setOnlineRoomCategories(roomCode: string, categories: string[]) {
+  const next = categories.length > 0 ? categories : ['ALL'];
+  await updateDoc(doc(db, 'rooms', roomCode), {
+    categories: next,
+    category: next[0],
+  });
 }

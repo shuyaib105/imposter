@@ -45,3 +45,143 @@
   animation: none !important;
   transition: none !important;
 }
+
+/* ---------------------------------------------------------------------------
+   Light theme
+   The app is authored with Tailwind's slate/purple palette, so remapping the
+   palette variables flips the whole UI (including opacity variants, which use
+   color-mix over these variables) without touching every component.
+--------------------------------------------------------------------------- */
+html {
+  background-color: #070b16;
+  color-scheme: dark;
+}
+
+html.light {
+  color-scheme: light;
+  background-color: #eef2f8;
+
+  --color-white: #0f172a;
+
+  --color-slate-50: #020617;
+  --color-slate-100: #0f172a;
+  --color-slate-200: #1e293b;
+  --color-slate-300: #334155;
+  --color-slate-400: #475569;
+  --color-slate-500: #64748b;
+  --color-slate-600: #94a3b8;
+  --color-slate-700: #cbd5e1;
+  --color-slate-800: #e2e8f0;
+  --color-slate-900: #f8fafc;
+  --color-slate-950: #ffffff;
+
+  --color-purple-950: #f5f3ff;
+  --color-purple-900: #ede9fe;
+  --color-purple-800: #ddd6fe;
+  --color-purple-400: #7c3aed;
+  --color-purple-300: #6d28d9;
+  --color-purple-200: #4c1d95;
+  --color-purple-100: #6d28d9;
+
+  --color-indigo-950: #e0e7ff;
+  --color-indigo-900: #eef2ff;
+  --color-indigo-400: #4f46e5;
+  --color-indigo-300: #4338ca;
+  --color-indigo-200: #3730a3;
+
+  --color-emerald-950: #d1fae5;
+  --color-emerald-900: #ecfdf5;
+  --color-emerald-400: #059669;
+  --color-emerald-300: #047857;
+  --color-emerald-200: #065f46;
+
+  --color-red-950: #fee2e2;
+  --color-red-900: #fecaca;
+  --color-red-400: #dc2626;
+  --color-red-300: #b91c1c;
+  --color-red-200: #991b1b;
+
+  --color-amber-950: #fef3c7;
+  --color-amber-900: #fffbeb;
+  --color-amber-400: #b45309;
+  --color-amber-300: #92400e;
+  --color-amber-200: #78350f;
+
+  --color-blue-400: #2563eb;
+  --color-pink-400: #db2777;
+}
+
+html.light .bg-\[\#070b16\] {
+  background-color: #eef2f8;
+}
+
+/* Keep text readable on solid accent buttons after the white remap */
+html.light :is(
+  .bg-purple-600, .bg-purple-500, .bg-indigo-600, .bg-violet-600,
+  .bg-emerald-600, .bg-emerald-500, .bg-teal-600, .bg-red-600,
+  .bg-blue-600, .bg-amber-600, .bg-amber-500, .bg-pink-500
+),
+html.light [class*="from-purple-600"],
+html.light [class*="from-purple-500"],
+html.light [class*="from-emerald-600"],
+html.light [class*="from-emerald-500"],
+html.light [class*="from-pink-500"] {
+  color: #ffffff;
+}
+
+html.light :is(
+  .bg-purple-600, .bg-purple-500, .bg-indigo-600, .bg-violet-600,
+  .bg-emerald-600, .bg-emerald-500, .bg-teal-600, .bg-red-600,
+  .bg-blue-600, .bg-amber-600, .bg-amber-500, .bg-pink-500
+) :is(.text-white, .text-purple-100, .text-purple-200, .text-purple-300),
+html.light [class*="from-purple-600"] :is(.text-white, .text-purple-100, .text-purple-200, .text-purple-300),
+html.light [class*="from-purple-500"] :is(.text-white, .text-purple-100, .text-purple-200, .text-purple-300),
+html.light [class*="from-emerald-600"] .text-white,
+html.light [class*="from-emerald-500"] .text-white,
+html.light [class*="from-pink-500"] .text-white {
+  color: #ffffff;
+}
+
+/* Anek Bangla for Bangla UI text (falls back to system fonts offline) */
+html[lang="bn"] body,
+html[lang="bn"] .font-sans {
+  font-family: "Anek Bangla", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* Mobile / app-like baseline */
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+.safe-area {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+button,
+[role="button"] {
+  touch-action: manipulation;
+}
+
+/* iOS zooms into inputs below 16px; keep in-app forms app-like instead */
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}

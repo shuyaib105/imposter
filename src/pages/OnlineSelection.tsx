@@ -28,7 +28,7 @@ export default function OnlineSelection({
 
   // Create form state
   const [onlineMode, setOnlineMode] = useState<OnlineModeType>('CHAT_ON');
-  const [category, setCategory] = useState(CATEGORIES[0].id);
+  const [categories, setCategories] = useState<string[]>(['ALL']);
   const [difficulty, setDifficulty] = useState<GameDifficulty>(
     settings.defaultDifficulty
   );
@@ -58,6 +58,18 @@ export default function OnlineSelection({
   const profileName = profile.name.trim();
   const profileReady = profileName.length > 0;
 
+  const toggleCategory = (id: string) => {
+    sound.playClick();
+    setCategories((prev) => {
+      if (id === 'ALL') return ['ALL'];
+      const withoutAll = prev.filter((c) => c !== 'ALL');
+      const next = withoutAll.includes(id)
+        ? withoutAll.filter((c) => c !== id)
+        : [...withoutAll, id];
+      return next.length > 0 ? next : ['ALL'];
+    });
+  };
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
@@ -73,7 +85,7 @@ export default function OnlineSelection({
         profileName,
         profile.avatar,
         onlineMode,
-        category,
+        categories,
         difficulty
       );
       onRoomJoined(res.roomCode, res.playerId);
@@ -265,22 +277,30 @@ export default function OnlineSelection({
           </div>
 
           {/* Category & Difficulty */}
-          <div className="grid grid-cols-2 gap-2">
+          <div className="space-y-4">
             <div>
               <label className="text-xs font-mono uppercase text-slate-400 block mb-1.5">
                 {t.category}
               </label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-purple-500"
-              >
-                {categoryOptions.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.label}
-                  </option>
-                ))}
-              </select>
+              <div className="flex flex-wrap gap-1.5">
+                {categoryOptions.map((cat) => {
+                  const isSelected = categories.includes(cat.id);
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => toggleCategory(cat.id)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-medium transition cursor-pointer ${
+                        isSelected
+                          ? 'bg-purple-950 border border-purple-500/60 text-purple-200'
+                          : 'bg-slate-950/80 border border-slate-800 text-slate-500 hover:text-slate-300'
+                      }`}
+                    >
+                      {cat.label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             <div>

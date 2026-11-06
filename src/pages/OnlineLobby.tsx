@@ -9,7 +9,7 @@ import {
   leaveOnlineRoom,
   startOnlineGame,
   removePlayerFromRoom,
-  setOnlineRoomCategory,
+  setOnlineRoomCategories,
 } from '../services/onlineEngine';
 import {
   Copy,
@@ -81,13 +81,21 @@ export default function OnlineLobby({
     }
   };
 
-  const categoryLabel = (() => {
-    if (roomData.category === 'ALL') return t.allCategories;
-    if (roomData.category === CUSTOM_CATEGORY_ID) return t.customWords;
-    const cat = CATEGORIES.find((c) => c.id === roomData.category);
-    if (!cat) return roomData.category;
-    return settings.language === 'bn' ? cat.bn : cat.en;
-  })();
+  const selectedCategories =
+    roomData.categories && roomData.categories.length > 0
+      ? roomData.categories
+      : [roomData.category || 'ALL'];
+
+  const categoryLabelOf = (id: string) => {
+    if (id === 'ALL') return t.allCategories;
+    if (id === CUSTOM_CATEGORY_ID) return t.customWords;
+    const cat = CATEGORIES.find((c) => c.id === id);
+    return cat ? (settings.language === 'bn' ? cat.bn : cat.en) : id;
+  };
+
+  const categoryLabel = selectedCategories.includes('ALL')
+    ? t.allCategories
+    : selectedCategories.map(categoryLabelOf).join(' · ');
 
   const hasCustomPairs = allWordPairs.some((p) => p.isCustom);
   const categoryOptions = [
@@ -96,18 +104,34 @@ export default function OnlineLobby({
       id: cat.id,
       label: settings.language === 'bn' ? cat.bn : cat.en,
     })),
-    ...(hasCustomPairs || roomData.category === CUSTOM_CATEGORY_ID
+    ...(hasCustomPairs || selectedCategories.includes(CUSTOM_CATEGORY_ID)
       ? [{ id: CUSTOM_CATEGORY_ID, label: t.customWords }]
       : []),
   ];
 
-  const handleCategoryChange = async (nextCategory: string) => {
-    if (!isHost || nextCategory === roomData.category) return;
+  const handleCategoryToggle = async (id: string) => {
+    if (!isHost || isChangingCategory) return;
+    let next: string[];
+    if (id === 'ALL') {
+      next = ['ALL'];
+    } else {
+      const withoutAll = selectedCategories.filter((c) => c !== 'ALL');
+      next = withoutAll.includes(id)
+        ? withoutAll.filter((c) => c !== id)
+        : [...withoutAll, id];
+      if (next.length === 0) next = ['ALL'];
+    }
+    if (
+      next.length === selectedCategories.length &&
+      next.every((c) => selectedCategories.includes(c))
+    ) {
+      return;
+    }
     sound.playClick();
     try {
       setIsChangingCategory(true);
       setErrorMsg('');
-      await setOnlineRoomCategory(roomData.id, nextCategory);
+      await setOnlineRoomCategories(roomData.id, next);
     } catch (err) {
       console.error(err);
       setErrorMsg(t.genericError);
@@ -150,9 +174,9 @@ export default function OnlineLobby({
       setErrorMsg('');
       sound.playClick();
 
-      // Pick a word pair matching the room's category and difficulty
+      // Pick a word pair matching the room's category selection and difficulty
       const pair = pickWordPair(allWordPairs, {
-        category: roomData.category,
+        categories: selectedCategories,
         difficulty: roomData.difficulty,
       });
       if (!pair) {
@@ -234,24 +258,32 @@ export default function OnlineLobby({
           </span>
         </div>
 
-        {/* Host-only: switch category for the upcoming round */}
+        {/* Host-only: switch categories for the upcoming round */}
         {isHost && (
-          <div className="flex items-center justify-center gap-2 pt-1">
-            <label className="text-[10px] font-mono uppercase tracking-wider text-purple-300">
+          <div className="pt-2 space-y-1.5">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-purple-300 block text-center">
               {t.roundCategory}
-            </label>
-            <select
-              value={roomData.category}
-              onChange={(e) => handleCategoryChange(e.target.value)}
-              disabled={isChangingCategory || isStarting}
-              className="bg-slate-950 border border-purple-500/40 rounded-lg px-2 py-1 text-[11px] font-mono text-white focus:outline-none focus:border-purple-400 disabled:opacity-60 cursor-pointer"
-            >
-              {categoryOptions.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.label}
-                </option>
-              ))}
-            </select>
+            </span>
+            <div className="flex flex-wrap justify-center gap-1.5">
+              {categoryOptions.map((cat) => {
+                const isSelected = selectedCategories.includes(cat.id);
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => handleCategoryToggle(cat.id)}
+                    disabled={isChangingCategory || isStarting}
+                    className={`px-2.5 py-1 rounded-lg text-[10px] font-medium border transition cursor-pointer disabled:opacity-60 ${
+                      isSelected
+                        ? 'bg-purple-950 border-purple-500/60 text-purple-200'
+                        : 'bg-slate-950/80 border-slate-800 text-slate-500 hover:text-slate-300'
+                    }`}
+                  >
+                    {cat.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         )}
       </div>

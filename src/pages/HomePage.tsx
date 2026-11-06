@@ -13,11 +13,14 @@ import {
   Vote,
   Trophy,
   Pencil,
+  Moon,
+  Sun,
 } from 'lucide-react';
 
 interface HomePageProps {
   settings: GameSettings;
   profile: UserProfile;
+  onToggleTheme: () => void;
   onSelectProfile: () => void;
   onSelectOffline: () => void;
   onSelectOnline: () => void;
@@ -30,6 +33,7 @@ interface HomePageProps {
 export default function HomePage({
   settings,
   profile,
+  onToggleTheme,
   onSelectProfile,
   onSelectOffline,
   onSelectOnline,
@@ -41,7 +45,20 @@ export default function HomePage({
   const t = TRANSLATIONS[settings.language];
 
   return (
-    <div className="max-w-md mx-auto px-4 py-8 min-h-[90vh] flex flex-col justify-between animate-fadeIn">
+    <div className="relative max-w-md mx-auto px-4 py-8 min-h-[90vh] flex flex-col justify-between animate-fadeIn">
+      {/* Quick theme switch */}
+      <button
+        onClick={() => {
+          sound.playClick();
+          onToggleTheme();
+        }}
+        title={settings.darkMode ? t.lightMode : t.darkMode}
+        aria-label={settings.darkMode ? t.lightMode : t.darkMode}
+        className="absolute top-4 right-4 w-10 h-10 rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 hover:text-white hover:border-purple-500/60 transition flex items-center justify-center cursor-pointer z-10"
+      >
+        {settings.darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+      </button>
+
       {/* Top Brand & Logo */}
       <div className="text-center space-y-4 pt-4">
         {/* Animated Brand Badge */}
@@ -117,7 +134,7 @@ export default function HomePage({
           className="w-full p-4.5 rounded-2xl bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:scale-[1.02] active:scale-[0.99] text-white flex items-center justify-between shadow-xl shadow-purple-900/40 border border-purple-400/30 transition-all cursor-pointer group"
         >
           <div className="flex items-center gap-3.5 text-left">
-            <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-white shrink-0 group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 rounded-xl bg-[#ffffff1a] flex items-center justify-center text-white shrink-0 group-hover:scale-110 transition-transform">
               <Smartphone className="w-6 h-6" />
             </div>
             <div>

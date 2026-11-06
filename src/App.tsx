@@ -108,6 +108,14 @@ export default function App() {
     document.documentElement.lang = settings.language === 'bn' ? 'bn' : 'en';
   }, [settings.language]);
 
+  useEffect(() => {
+    document.documentElement.classList.toggle('light', !settings.darkMode);
+    const themeMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeMeta) {
+      themeMeta.setAttribute('content', settings.darkMode ? '#070b16' : '#eef2f8');
+    }
+  }, [settings.darkMode]);
+
   // Keep the online session across a page refresh (per browser tab)
   useEffect(() => {
     try {
@@ -339,7 +347,7 @@ export default function App() {
 
   return (
     <div
-      className={`min-h-screen bg-[#070b16] text-slate-100 flex flex-col justify-between selection:bg-purple-600 selection:text-white font-sans overflow-x-hidden ${
+      className={`safe-area min-h-[100dvh] bg-[#070b16] text-slate-100 flex flex-col justify-between selection:bg-purple-600 selection:text-white font-sans overflow-x-hidden ${
         settings.animationsEnabled ? '' : 'reduce-motion'
       }`}
     >
@@ -355,6 +363,9 @@ export default function App() {
           <HomePage
             settings={settings}
             profile={profile}
+            onToggleTheme={() =>
+              handleUpdateSettings({ ...settings, darkMode: !settings.darkMode })
+            }
             onSelectProfile={() => {
               setProfileReturnPhase('HOME');
               setPhase('PROFILE');
