@@ -9,6 +9,7 @@ import {
   leaveOnlineRoom,
   startOnlineGame,
   removePlayerFromRoom,
+  setOnlineRoomCategory,
 } from '../services/onlineEngine';
 import {
   Copy,
@@ -44,6 +45,7 @@ export default function OnlineLobby({
   const t = TRANSLATIONS[settings.language];
   const [copied, setCopied] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
+  const [isChangingCategory, setIsChangingCategory] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [confirmKickId, setConfirmKickId] = useState<string | null>(null);
 
@@ -80,11 +82,39 @@ export default function OnlineLobby({
   };
 
   const categoryLabel = (() => {
+    if (roomData.category === 'ALL') return t.allCategories;
     if (roomData.category === CUSTOM_CATEGORY_ID) return t.customWords;
     const cat = CATEGORIES.find((c) => c.id === roomData.category);
     if (!cat) return roomData.category;
     return settings.language === 'bn' ? cat.bn : cat.en;
   })();
+
+  const hasCustomPairs = allWordPairs.some((p) => p.isCustom);
+  const categoryOptions = [
+    { id: 'ALL', label: t.allCategories },
+    ...CATEGORIES.map((cat) => ({
+      id: cat.id,
+      label: settings.language === 'bn' ? cat.bn : cat.en,
+    })),
+    ...(hasCustomPairs || roomData.category === CUSTOM_CATEGORY_ID
+      ? [{ id: CUSTOM_CATEGORY_ID, label: t.customWords }]
+      : []),
+  ];
+
+  const handleCategoryChange = async (nextCategory: string) => {
+    if (!isHost || nextCategory === roomData.category) return;
+    sound.playClick();
+    try {
+      setIsChangingCategory(true);
+      setErrorMsg('');
+      await setOnlineRoomCategory(roomData.id, nextCategory);
+    } catch (err) {
+      console.error(err);
+      setErrorMsg(t.genericError);
+    } finally {
+      setIsChangingCategory(false);
+    }
+  };
 
   const handleToggleReady = async () => {
     sound.playClick();
@@ -114,7 +144,7 @@ export default function OnlineLobby({
   };
 
   const handleStartGame = async () => {
-    if (!isHost || !allReady || isStarting) return;
+    if (!isHost || !allReady || isStarting || isChangingCategory) return;
     try {
       setIsStarting(true);
       setErrorMsg('');
@@ -203,6 +233,27 @@ export default function OnlineLobby({
             {roomData.mode === 'CHAT_ON' ? t.chatOnShort : t.chatOffShort}
           </span>
         </div>
+
+        {/* Host-only: switch category for the upcoming round */}
+        {isHost && (
+          <div className="flex items-center justify-center gap-2 pt-1">
+            <label className="text-[10px] font-mono uppercase tracking-wider text-purple-300">
+              {t.roundCategory}
+            </label>
+            <select
+              value={roomData.category}
+              onChange={(e) => handleCategoryChange(e.target.value)}
+              disabled={isChangingCategory || isStarting}
+              className="bg-slate-950 border border-purple-500/40 rounded-lg px-2 py-1 text-[11px] font-mono text-white focus:outline-none focus:border-purple-400 disabled:opacity-60 cursor-pointer"
+            >
+              {categoryOptions.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
       {/* Players Connected List */}
@@ -306,7 +357,7 @@ export default function OnlineLobby({
         {isHost && (
           <button
             onClick={handleStartGame}
-            disabled={!allReady || isStarting}
+            disabled={!allReady || isStarting || isChangingCategory}
             className={`w-full py-4 rounded-2xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl transition cursor-pointer ${
               allReady && !isStarting
                 ? 'bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:scale-[1.02] text-white shadow-purple-600/30'

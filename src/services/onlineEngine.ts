@@ -432,3 +432,8 @@ export async function removePlayerFromRoom(roomCode: string, playerId: string) {
     await deleteDoc(doc(db, 'rooms', roomCode, 'votes', playerId));
   } catch {}
 }
+
+/** Lets the host switch the category between rounds. 'ALL' means every category. */
+export async function setOnlineRoomCategory(roomCode: string, category: string) {
+  await updateDoc(doc(db, 'rooms', roomCode), { category });
+}

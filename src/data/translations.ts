@@ -230,6 +230,8 @@ export const TRANSLATIONS = {
     voteMapTitle: 'Who Voted for Whom',
     didNotVote: 'Did not vote',
     youTag: 'You',
+    allCategories: 'All Categories',
+    roundCategory: 'Category for this round',
   },
   bn: {
     gameTitle: 'ইম্পোস্টার',
@@ -462,5 +464,7 @@ export const TRANSLATIONS = {
     voteMapTitle: 'কে কাকে ভোট দিয়েছে',
     didNotVote: 'ভোট দেননি',
     youTag: 'আপনি',
+    allCategories: 'সব ক্যাটাগরি',
+    roundCategory: 'এই রাউন্ডের ক্যাটাগরি',
   },
 };

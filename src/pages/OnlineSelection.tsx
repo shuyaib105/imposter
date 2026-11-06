@@ -40,6 +40,7 @@ export default function OnlineSelection({
   const [errorMsg, setErrorMsg] = useState('');
 
   const categoryOptions = [
+    { id: 'ALL', label: t.allCategories },
     ...CATEGORIES.map((cat) => ({
       id: cat.id,
       label: settings.language === 'bn' ? cat.bn : cat.en,
