@@ -144,62 +144,6 @@ export default function GameResults({
         </div>
       </div>
 
-      {/* Who voted for whom — keeps every ballot clear after the reveal */}
-      <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-2">
-        <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block">
-          {t.voteMapTitle}
-        </span>
-        <div className="space-y-1.5 max-h-[26vh] overflow-y-auto pr-1">
-          {players.map((voter) => {
-            const targetId = votes?.[voter.id];
-            const target = targetId ? players.find((p) => p.id === targetId) : undefined;
-            const isMe = voter.id === myPlayerId;
-
-            return (
-              <div
-                key={voter.id}
-                className={`flex items-center justify-between gap-2 p-2 rounded-xl border ${
-                  isMe
-                    ? 'bg-indigo-950/40 border-indigo-500/40'
-                    : 'bg-slate-950/40 border-slate-800/80'
-                }`}
-              >
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="text-base shrink-0">{voter.avatar}</span>
-                  <span className="text-xs font-bold text-slate-200 truncate">
-                    {voter.name}
-                    {isMe && <span className="text-indigo-300"> ({t.youTag})</span>}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-1.5 min-w-0">
-                  <ArrowRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                  {target ? (
-                    <>
-                      <span className="text-base shrink-0">{target.avatar}</span>
-                      <span
-                        className={`text-xs font-bold truncate ${
-                          target.id === imposterId ? 'text-red-300' : 'text-white'
-                        }`}
-                      >
-                        {target.name}
-                      </span>
-                      {target.id === imposterId && (
-                        <span className="text-[8px] font-mono px-1 py-0.5 rounded bg-red-900/60 text-red-300 border border-red-500/30 shrink-0">
-                          {t.imposterBadge}
-                        </span>
-                      )}
-                    </>
-                  ) : (
-                    <span className="text-[11px] font-mono text-slate-500">{t.didNotVote}</span>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
       {/* Your own ballot, so players remember whom they voted for */}
       {myPlayerId && (
         <div className="p-4 rounded-2xl bg-indigo-950/40 border border-indigo-500/30 space-y-1.5">
@@ -279,6 +223,62 @@ export default function GameResults({
                 </div>
               );
             })}
+        </div>
+      </div>
+
+      {/* Who voted for whom — keeps every ballot clear after the reveal */}
+      <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-2">
+        <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block">
+          {t.voteMapTitle}
+        </span>
+        <div className="space-y-1.5 max-h-[26vh] overflow-y-auto pr-1">
+          {players.map((voter) => {
+            const targetId = votes?.[voter.id];
+            const target = targetId ? players.find((p) => p.id === targetId) : undefined;
+            const isMe = voter.id === myPlayerId;
+
+            return (
+              <div
+                key={voter.id}
+                className={`flex items-center justify-between gap-2 p-2 rounded-xl border ${
+                  isMe
+                    ? 'bg-indigo-950/40 border-indigo-500/40'
+                    : 'bg-slate-950/40 border-slate-800/80'
+                }`}
+              >
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="text-base shrink-0">{voter.avatar}</span>
+                  <span className="text-xs font-bold text-slate-200 truncate">
+                    {voter.name}
+                    {isMe && <span className="text-indigo-300"> ({t.youTag})</span>}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <ArrowRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                  {target ? (
+                    <>
+                      <span className="text-base shrink-0">{target.avatar}</span>
+                      <span
+                        className={`text-xs font-bold truncate ${
+                          target.id === imposterId ? 'text-red-300' : 'text-white'
+                        }`}
+                      >
+                        {target.name}
+                      </span>
+                      {target.id === imposterId && (
+                        <span className="text-[8px] font-mono px-1 py-0.5 rounded bg-red-900/60 text-red-300 border border-red-500/30 shrink-0">
+                          {t.imposterBadge}
+                        </span>
+                      )}
+                    </>
+                  ) : (
+                    <span className="text-[11px] font-mono text-slate-500">{t.didNotVote}</span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
