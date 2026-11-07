@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { GameSettings, OnlineModeType, GameDifficulty, WordPair, UserProfile } from '../types';
+import { GameSettings, OnlineModeType, GameDifficulty, UserProfile } from '../types';
 import { TRANSLATIONS } from '../data/translations';
-import { CATEGORIES, CUSTOM_CATEGORY_ID } from '../data/words';
+import { CATEGORIES } from '../data/words';
 import { sound } from '../utils/sound';
 import { createOnlineRoom, joinOnlineRoom } from '../services/onlineEngine';
 import { PlusCircle, LogIn, ArrowRight, ShieldAlert, MessageSquare, Radio } from 'lucide-react';
@@ -9,7 +9,6 @@ import PageHeader from '../components/PageHeader';
 
 interface OnlineSelectionProps {
   settings: GameSettings;
-  customWords: WordPair[];
   profile: UserProfile;
   onEditProfile: () => void;
   onRoomJoined: (roomCode: string, playerId: string) => void;
@@ -18,7 +17,6 @@ interface OnlineSelectionProps {
 
 export default function OnlineSelection({
   settings,
-  customWords,
   profile,
   onEditProfile,
   onRoomJoined,
@@ -46,14 +44,6 @@ export default function OnlineSelection({
       id: cat.id,
       label: settings.language === 'bn' ? cat.bn : cat.en,
     })),
-    ...(customWords.length > 0
-      ? [
-          {
-            id: CUSTOM_CATEGORY_ID,
-            label: t.customWords,
-          },
-        ]
-      : []),
   ];
 
   const profileName = profile.name.trim();

@@ -17,9 +17,6 @@ export const CATEGORIES = [
   { id: 'General Knowledge', en: 'General Knowledge', bn: 'সাধারণ জ্ঞান' },
 ];
 
-/** Pseudo-category used to play user-created word pairs online. */
-export const CUSTOM_CATEGORY_ID = 'Custom';
-
 export const WORD_PAIRS: WordPair[] = [
   // 1. Food & Drinks
   { id: 'fd_1', category: 'Food & Drinks', categoryBn: 'খাবার ও পানীয়', wordA: 'Kacchi Biryani', wordABn: 'কাচ্চি বিরিয়ানি', wordB: 'Tehari', wordBBn: 'তেহারি', difficulty: 'EASY' },

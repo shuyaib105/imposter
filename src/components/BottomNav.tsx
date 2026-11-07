@@ -1,4 +1,4 @@
-import { Home, BarChart3, BookPlus, Settings as SettingsIcon } from 'lucide-react';
+import { Home, BarChart3, Settings as SettingsIcon, Code2 } from 'lucide-react';
 import { GamePhase, GameSettings } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { sound } from '../utils/sound';
@@ -15,8 +15,8 @@ export default function BottomNav({ settings, activePhase, onNavigate }: BottomN
   const tabs: { phase: GamePhase; label: string; Icon: typeof Home }[] = [
     { phase: 'HOME', label: t.home, Icon: Home },
     { phase: 'STATS', label: t.stats, Icon: BarChart3 },
-    { phase: 'CUSTOM_WORDS', label: t.customWords, Icon: BookPlus },
     { phase: 'SETTINGS', label: t.settings, Icon: SettingsIcon },
+    { phase: 'DEVELOPERS', label: t.developerSection, Icon: Code2 },
   ];
 
   return (
@@ -51,7 +51,7 @@ export default function BottomNav({ settings, activePhase, onNavigate }: BottomN
                   strokeWidth={isActive ? 2.4 : 2}
                 />
                 <span
-                  className={`text-[10px] leading-none ${
+                  className={`max-w-full truncate px-0.5 text-[10px] leading-none ${
                     isActive ? 'font-bold' : 'font-medium'
                   }`}
                 >

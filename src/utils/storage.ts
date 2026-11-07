@@ -1,9 +1,8 @@
-import { PlayerStats, GameSettings, WinnerStatus, WordPair, UserProfile } from '../types';
+import { PlayerStats, GameSettings, WinnerStatus, UserProfile } from '../types';
 import { AVATARS } from '../data/words';
 
 const STATS_KEY = 'imposter_player_stats_v1';
 const SETTINGS_KEY = 'imposter_game_settings_v1';
-const CUSTOM_WORDS_KEY = 'imposter_custom_words_v1';
 const RECORDED_RESULTS_KEY = 'imposter_recorded_results_v1';
 const PROFILE_KEY = 'imposter_user_profile_v1';
 
@@ -149,42 +148,5 @@ export function resetStats(): PlayerStats {
     localStorage.setItem(STATS_KEY, JSON.stringify(DEFAULT_STATS));
   } catch {}
   return DEFAULT_STATS;
-}
-
-// ---------------------------------------------------------------------------
-// Custom word pairs
-// ---------------------------------------------------------------------------
-
-export function loadCustomWords(): WordPair[] {
-  try {
-    const raw = localStorage.getItem(CUSTOM_WORDS_KEY);
-    if (raw) {
-      const parsed: unknown = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        return parsed
-          .filter(
-            (p): p is WordPair =>
-              !!p && typeof p.id === 'string' && typeof p.wordA === 'string' && typeof p.wordB === 'string'
-          )
-          .map((p) => ({
-            ...p,
-            category: p.category || 'Custom',
-            categoryBn:
-              p.categoryBn || (p.category === 'Custom' ? 'কাস্টম' : p.category) || 'কাস্টম',
-            wordABn: p.wordABn || p.wordA,
-            wordBBn: p.wordBBn || p.wordB,
-            difficulty: p.difficulty || 'MEDIUM',
-            isCustom: true,
-          }));
-      }
-    }
-  } catch {}
-  return [];
-}
-
-export function saveCustomWords(pairs: WordPair[]) {
-  try {
-    localStorage.setItem(CUSTOM_WORDS_KEY, JSON.stringify(pairs));
-  } catch {}
 }
 

@@ -1,8 +1,7 @@
 import { GameDifficulty, WordPair } from '../types';
-import { CUSTOM_CATEGORY_ID } from '../data/words';
 
 export interface WordSelectionOptions {
-  /** Exact category id. Use CUSTOM_CATEGORY_ID for user-created pairs. */
+  /** Exact category id. */
   category?: string | null;
   /** Multiple category ids. 'ALL' (or an empty list) means every category. */
   categories?: string[] | null;
@@ -30,22 +29,13 @@ export function pickWordPair(
 
   if (categories && categories.length > 0 && !categories.includes('ALL')) {
     const selected = new Set(categories);
-    const byCategories = pool.filter((p) =>
-      p.isCustom ? selected.has(CUSTOM_CATEGORY_ID) : selected.has(p.category)
-    );
+    const byCategories = pool.filter((p) => selected.has(p.category));
     if (byCategories.length > 0) pool = byCategories;
   } else if (category && category !== 'ALL') {
-    const byCategory =
-      category === CUSTOM_CATEGORY_ID
-        ? pool.filter((p) => p.isCustom)
-        : pool.filter((p) => p.category === category);
+    const byCategory = pool.filter((p) => p.category === category);
     if (byCategory.length > 0) pool = byCategory;
   } else if (preferredCategories && preferredCategories.length > 0) {
-    // Custom pairs are always allowed in offline play, otherwise the player
-    // would have no way to actually use the words they created.
-    const byPreference = pool.filter(
-      (p) => p.isCustom || preferredCategories.includes(p.category)
-    );
+    const byPreference = pool.filter((p) => preferredCategories.includes(p.category));
     if (byPreference.length > 0) pool = byPreference;
   }
 
@@ -54,9 +44,7 @@ export function pickWordPair(
   const categoryPool = pool;
 
   if (difficulty) {
-    // Custom pairs have no authored difficulty, so keep them eligible at every
-    // level instead of silently hiding the words the player created.
-    const byDifficulty = pool.filter((p) => p.isCustom || p.difficulty === difficulty);
+    const byDifficulty = pool.filter((p) => p.difficulty === difficulty);
     if (byDifficulty.length > 0) pool = byDifficulty;
   }
 

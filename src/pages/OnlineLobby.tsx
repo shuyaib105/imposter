@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { OnlineRoomData, Player, GameSettings, WordPair } from '../types';
 import { TRANSLATIONS } from '../data/translations';
-import { CATEGORIES, CUSTOM_CATEGORY_ID } from '../data/words';
+import { CATEGORIES } from '../data/words';
 import { pickWordPair } from '../game/wordSelection';
 import { loadRecentWordIds, rememberWordId } from '../game/wordHistory';
 import { sound } from '../utils/sound';
@@ -90,7 +90,6 @@ export default function OnlineLobby({
 
   const categoryLabelOf = (id: string) => {
     if (id === 'ALL') return t.allCategories;
-    if (id === CUSTOM_CATEGORY_ID) return t.customWords;
     const cat = CATEGORIES.find((c) => c.id === id);
     return cat ? (settings.language === 'bn' ? cat.bn : cat.en) : id;
   };
@@ -99,16 +98,12 @@ export default function OnlineLobby({
     ? t.allCategories
     : selectedCategories.map(categoryLabelOf).join(' · ');
 
-  const hasCustomPairs = allWordPairs.some((p) => p.isCustom);
   const categoryOptions = [
     { id: 'ALL', label: t.allCategories },
     ...CATEGORIES.map((cat) => ({
       id: cat.id,
       label: settings.language === 'bn' ? cat.bn : cat.en,
     })),
-    ...(hasCustomPairs || selectedCategories.includes(CUSTOM_CATEGORY_ID)
-      ? [{ id: CUSTOM_CATEGORY_ID, label: t.customWords }]
-      : []),
   ];
 
   const handleCategoryToggle = async (id: string) => {

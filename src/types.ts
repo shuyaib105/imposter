@@ -12,7 +12,7 @@ export type GamePhase =
   | 'PROFILE'
   | 'SETTINGS'
   | 'STATS'
-  | 'CUSTOM_WORDS'
+  | 'DEVELOPERS'
   | 'OFFLINE_SETUP'
   | 'OFFLINE_WORD_REVEAL'
   | 'OFFLINE_DISCUSSION'
@@ -49,7 +49,6 @@ export interface WordPair {
   wordB: string; // Imposter word
   wordBBn: string;
   difficulty: GameDifficulty;
-  isCustom?: boolean;
 }
 
 export interface GameSettings {

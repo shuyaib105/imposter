@@ -10,7 +10,6 @@ import {
   GamePhase,
   GameSettings,
   Player,
-  WordPair,
   WinnerStatus,
   OnlineRoomData,
   UserProfile,
@@ -21,8 +20,6 @@ import {
   loadSettings,
   saveSettings,
   recordGameStats,
-  loadCustomWords,
-  saveCustomWords,
   hasRecordedResult,
   markResultRecorded,
   loadProfile,
@@ -52,8 +49,8 @@ import OnlineVoting from './pages/OnlineVoting';
 import SettingsView from './pages/SettingsView';
 import HowToPlay from './pages/HowToPlay';
 import StatsView from './pages/StatsView';
-import CustomWords from './pages/CustomWords';
 import ProfileView from './pages/ProfileView';
+import DeveloperPage from './pages/DeveloperPage';
 
 function readSession(key: string): string {
   try {
@@ -68,12 +65,11 @@ export default function App() {
   const [profileReturnPhase, setProfileReturnPhase] = useState<GamePhase>('HOME');
   const [settings, setSettings] = useState<GameSettings>(loadSettings);
   const [profile, setProfile] = useState<UserProfile>(loadProfile);
-  const [customWords, setCustomWords] = useState<WordPair[]>(loadCustomWords);
   const t = TRANSLATIONS[settings.language];
 
   // Bottom tab bar is only shown on the app's top-level destinations
   const showNav: boolean = (
-    ['HOME', 'STATS', 'CUSTOM_WORDS', 'SETTINGS'] as GamePhase[]
+    ['HOME', 'STATS', 'SETTINGS', 'DEVELOPERS'] as GamePhase[]
   ).includes(phase);
 
   // -------------------------------------------------------------
@@ -109,7 +105,7 @@ export default function App() {
   const votingFinalizeRef = useRef<string>('');
 
   // Combined word bank (stock + user-created custom words)
-  const allWordPairs = [...WORD_PAIRS, ...customWords];
+  const allWordPairs = WORD_PAIRS;
 
   // -------------------------------------------------------------
   // Global Settings Effects
@@ -357,7 +353,7 @@ export default function App() {
   };
 
   // -------------------------------------------------------------
-  // Settings & Custom Words Handlers
+  // Settings & Profile Handlers
   // -------------------------------------------------------------
   const handleUpdateSettings = (next: GameSettings) => {
     setSettings(next);
@@ -367,22 +363,6 @@ export default function App() {
   const handleSaveProfile = (next: UserProfile) => {
     setProfile(next);
     saveProfile(next);
-  };
-
-  const handleAddCustomWord = (pair: WordPair) => {
-    setCustomWords((prev) => {
-      const next = [...prev, pair];
-      saveCustomWords(next);
-      return next;
-    });
-  };
-
-  const handleDeleteCustomWord = (id: string) => {
-    setCustomWords((prev) => {
-      const next = prev.filter((c) => c.id !== id);
-      saveCustomWords(next);
-      return next;
-    });
   };
 
   const myOnlinePlayer = onlinePlayers.find((p) => p.id === myPlayerId) || {
@@ -457,18 +437,11 @@ export default function App() {
           <StatsView settings={settings} onBack={() => setPhase('HOME')} />
         )}
 
-        {/* 5. CUSTOM WORDS */}
-        {phase === 'CUSTOM_WORDS' && (
-          <CustomWords
-            settings={settings}
-            customPairs={customWords}
-            onAddCustomPair={handleAddCustomWord}
-            onDeleteCustomPair={handleDeleteCustomWord}
-            onBack={() => setPhase('HOME')}
-          />
+        {phase === 'DEVELOPERS' && (
+          <DeveloperPage settings={settings} onBack={() => setPhase('HOME')} />
         )}
 
-        {/* 6. OFFLINE SETUP */}
+        {/* 5. OFFLINE SETUP */}
         {phase === 'OFFLINE_SETUP' && (
           <OfflineSetup
             settings={settings}
@@ -528,7 +501,6 @@ export default function App() {
         {phase === 'ONLINE_ROOM_SELECTION' && (
           <OnlineSelection
             settings={settings}
-            customWords={customWords}
             profile={profile}
             onEditProfile={() => {
               setProfileReturnPhase('ONLINE_ROOM_SELECTION');
