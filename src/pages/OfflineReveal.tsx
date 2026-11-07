@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react';
 import { Player, GameSettings } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { sound } from '../utils/sound';
-import { Eye, EyeOff, ShieldCheck, ArrowRight, Smartphone, AlertTriangle } from 'lucide-react';
+import { Eye, EyeOff, ShieldCheck, ArrowRight, Smartphone, AlertTriangle, ShieldAlert } from 'lucide-react';
 
 interface OfflineRevealProps {
   settings: GameSettings;
   players: Player[];
   playerSecrets: Record<string, string>; // playerId -> secret word
   playerSecretAlts?: Record<string, string>; // playerId -> other-language word
+  imposterId?: string;
+  revealImposter?: boolean;
   onAllRevealed: () => void;
 }
 
@@ -17,6 +19,8 @@ export default function OfflineReveal({
   players,
   playerSecrets,
   playerSecretAlts,
+  imposterId,
+  revealImposter,
   onAllRevealed,
 }: OfflineRevealProps) {
   const t = TRANSLATIONS[settings.language];
@@ -29,6 +33,7 @@ export default function OfflineReveal({
   const currentSecret = playerSecrets[currentPlayer.id];
   const currentSecretAlt = playerSecretAlts?.[currentPlayer.id] || '';
   const showSecretAlt = !!currentSecretAlt && currentSecretAlt !== currentSecret;
+  const showImposterWarning = !!revealImposter && currentPlayer.id === imposterId;
 
   // 5-second countdown timer when revealed
   useEffect(() => {
@@ -143,6 +148,18 @@ export default function OfflineReveal({
             </div>
 
             <div className="py-6 px-4 rounded-2xl bg-slate-950/80 border border-purple-500/40 shadow-inner">
+              {showImposterWarning && (
+                <div className="mb-4 rounded-xl border border-red-500/50 bg-red-950/50 px-3 py-2">
+                  <span className="flex items-center justify-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-red-300">
+                    <ShieldAlert className="h-3.5 w-3.5" />
+                    {t.imposterBadge}
+                  </span>
+                  <p className="mt-0.5 text-center text-sm font-black text-red-200">
+                    {t.youAreImposter}
+                  </p>
+                  <p className="text-center text-[10px] text-red-300/80">{t.imposterBlendHint}</p>
+                </div>
+              )}
               <span className="text-xs uppercase font-mono tracking-widest text-slate-400 block mb-1">
                 {t.secretWordLabel}
               </span>

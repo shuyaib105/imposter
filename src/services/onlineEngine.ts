@@ -92,6 +92,7 @@ export async function createOnlineRoom(
     difficulty,
     round: 1,
     totalVoted: 0,
+    revealImposter: false,
   };
 
   await setDoc(roomRef, roomData);
@@ -442,4 +443,9 @@ export async function setOnlineRoomCategories(roomCode: string, categories: stri
     categories: next,
     category: next[0],
   });
+}
+
+/** Host toggle: should the imposter be told their role during the reveal? */
+export async function setOnlineRoomRevealImposter(roomCode: string, revealImposter: boolean) {
+  await updateDoc(doc(db, 'rooms', roomCode), { revealImposter });
 }

@@ -98,6 +98,8 @@ export interface OnlineRoomData {
   /** Selected category ids for this round. 'ALL' means every category. */
   categories?: string[];
   difficulty: GameDifficulty;
+  /** When true, the imposter is told their role during the word reveal. */
+  revealImposter?: boolean;
   round: number;
   majorityWord?: string;
   imposterWord?: string;

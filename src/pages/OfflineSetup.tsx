@@ -3,12 +3,12 @@ import { Player, GameSettings } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { AVATARS } from '../data/words';
 import { sound } from '../utils/sound';
-import { Users, UserPlus, Trash2, ArrowRight, ShieldAlert } from 'lucide-react';
+import { Users, UserPlus, Trash2, ArrowRight, ShieldAlert, Eye } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 
 interface OfflineSetupProps {
   settings: GameSettings;
-  onStartGame: (players: Player[]) => void;
+  onStartGame: (players: Player[], revealImposter: boolean) => void;
   onBack: () => void;
 }
 
@@ -25,6 +25,7 @@ export default function OfflineSetup({ settings, onStartGame, onBack }: OfflineS
   });
 
   const [players, setPlayers] = useState<Player[]>(() => [1, 2, 3].map((i) => makePlayer(i)));
+  const [revealImposter, setRevealImposter] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
   const handleAddPlayer = () => {
@@ -56,7 +57,7 @@ export default function OfflineSetup({ settings, onStartGame, onBack }: OfflineS
       return;
     }
     sound.playClick();
-    onStartGame(players);
+    onStartGame(players, revealImposter);
   };
 
   return (
@@ -127,6 +128,34 @@ export default function OfflineSetup({ settings, onStartGame, onBack }: OfflineS
         <UserPlus className="w-4 h-4" />
         <span>{t.addPlayer}</span>
       </button>
+
+      {/* Optional mode: tell the imposter their role at reveal time */}
+      <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl border border-slate-800 bg-slate-900/60 p-3 backdrop-blur-md">
+        <div className="flex items-start gap-2.5">
+          <Eye className="mt-0.5 h-4 w-4 shrink-0 text-purple-400" />
+          <div>
+            <p className="text-xs font-bold text-white">{t.revealImposterMode}</p>
+            <p className="mt-0.5 text-[10px] leading-snug text-slate-500">
+              {t.revealImposterHint}
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            sound.playClick();
+            setRevealImposter((v) => !v);
+          }}
+          aria-pressed={revealImposter}
+          className={`shrink-0 rounded-lg border px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider transition cursor-pointer ${
+            revealImposter
+              ? 'border-purple-500/60 bg-purple-600/30 text-purple-200'
+              : 'border-slate-700 bg-slate-950 text-slate-500 hover:text-slate-300'
+          }`}
+        >
+          {revealImposter ? t.toggleOn : t.toggleOff}
+        </button>
+      </div>
 
       {/* Start Button */}
       <div className="mt-8 pt-4 border-t border-slate-800">

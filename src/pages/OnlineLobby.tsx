@@ -11,6 +11,7 @@ import {
   startOnlineGame,
   removePlayerFromRoom,
   setOnlineRoomCategories,
+  setOnlineRoomRevealImposter,
 } from '../services/onlineEngine';
 import {
   Copy,
@@ -24,6 +25,7 @@ import {
   MessageSquare,
   Sparkles,
   UserX,
+  Eye,
 } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 
@@ -48,6 +50,7 @@ export default function OnlineLobby({
   const [copied, setCopied] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
   const [isChangingCategory, setIsChangingCategory] = useState(false);
+  const [isTogglingReveal, setIsTogglingReveal] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [confirmKickId, setConfirmKickId] = useState<string | null>(null);
 
@@ -144,6 +147,21 @@ export default function OnlineLobby({
     } catch (err) {
       console.error(err);
       setErrorMsg(t.genericError);
+    }
+  };
+
+  const handleToggleRevealImposter = async () => {
+    if (!isHost || isTogglingReveal) return;
+    sound.playClick();
+    try {
+      setIsTogglingReveal(true);
+      setErrorMsg('');
+      await setOnlineRoomRevealImposter(roomData.id, !roomData.revealImposter);
+    } catch (err) {
+      console.error(err);
+      setErrorMsg(t.genericError);
+    } finally {
+      setIsTogglingReveal(false);
     }
   };
 
@@ -283,6 +301,48 @@ export default function OnlineLobby({
             </div>
           </div>
         )}
+
+        {/* Optional mode: the imposter is told their role at reveal time */}
+        <div className="pt-2 border-t border-slate-800/60">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-start gap-2 text-left">
+              <Eye className="mt-0.5 h-4 w-4 shrink-0 text-purple-400" />
+              <div>
+                <span className="block text-[10px] font-mono uppercase tracking-wider text-purple-300">
+                  {t.revealImposterMode}
+                </span>
+                <p className="mt-0.5 text-[10px] leading-snug text-slate-500">
+                  {t.revealImposterHint}
+                </p>
+              </div>
+            </div>
+            {isHost ? (
+              <button
+                type="button"
+                onClick={handleToggleRevealImposter}
+                disabled={isTogglingReveal || isStarting}
+                aria-pressed={!!roomData.revealImposter}
+                className={`shrink-0 rounded-lg border px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider transition cursor-pointer disabled:opacity-60 ${
+                  roomData.revealImposter
+                    ? 'border-purple-500/60 bg-purple-600/30 text-purple-200'
+                    : 'border-slate-700 bg-slate-950 text-slate-500 hover:text-slate-300'
+                }`}
+              >
+                {roomData.revealImposter ? t.toggleOn : t.toggleOff}
+              </button>
+            ) : (
+              <span
+                className={`shrink-0 rounded-lg border px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider ${
+                  roomData.revealImposter
+                    ? 'border-purple-500/50 bg-purple-950/60 text-purple-200'
+                    : 'border-slate-800 bg-slate-950/60 text-slate-500'
+                }`}
+              >
+                {roomData.revealImposter ? t.toggleOn : t.toggleOff}
+              </span>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Players Connected List */}

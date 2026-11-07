@@ -79,6 +79,7 @@ export default function App() {
   const [offlineImposterId, setOfflineImposterId] = useState<string>('');
   const [offlineSecrets, setOfflineSecrets] = useState<Record<string, string>>({});
   const [offlineSecretsAlt, setOfflineSecretsAlt] = useState<Record<string, string>>({});
+  const [offlineRevealImposter, setOfflineRevealImposter] = useState(false);
   const [offlineMajorityWord, setOfflineMajorityWord] = useState('');
   const [offlineImposterWord, setOfflineImposterWord] = useState('');
   const [offlineMajorityWordAlt, setOfflineMajorityWordAlt] = useState('');
@@ -275,8 +276,9 @@ export default function App() {
   // -------------------------------------------------------------
   // Offline Game Lifecycle Handlers
   // -------------------------------------------------------------
-  const handleStartOfflineGame = (players: Player[]) => {
+  const handleStartOfflineGame = (players: Player[], revealImposter = false) => {
     setOfflinePlayers(players);
+    setOfflineRevealImposter(revealImposter);
 
     // Pick a random pair respecting the player's category + difficulty settings
     const pair = pickWordPair(allWordPairs, {
@@ -330,7 +332,7 @@ export default function App() {
 
   const handleOfflinePlayAgain = () => {
     sound.playClick();
-    handleStartOfflineGame(offlinePlayers);
+    handleStartOfflineGame(offlinePlayers, offlineRevealImposter);
   };
 
   // -------------------------------------------------------------
@@ -457,6 +459,8 @@ export default function App() {
             players={offlinePlayers}
             playerSecrets={offlineSecrets}
             playerSecretAlts={offlineSecretsAlt}
+            imposterId={offlineImposterId}
+            revealImposter={offlineRevealImposter}
             onAllRevealed={() => setPhase('OFFLINE_DISCUSSION')}
           />
         )}
@@ -550,6 +554,8 @@ export default function App() {
             roomData={onlineRoom}
             secretWord={myOnlineSecretWord}
             secretWordAlt={myOnlineSecretWordAlt}
+            isImposter={myPlayerId === (onlineRoom.imposterId || '')}
+            revealImposter={!!onlineRoom.revealImposter}
             myPlayer={myOnlinePlayer}
             isHost={onlineRoom.hostId === myPlayerId}
           />

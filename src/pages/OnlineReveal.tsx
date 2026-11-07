@@ -3,13 +3,15 @@ import { OnlineRoomData, Player, GameSettings } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { sound } from '../utils/sound';
 import { advanceToDiscussion } from '../services/onlineEngine';
-import { Eye, EyeOff, ShieldCheck, ArrowRight, AlertTriangle } from 'lucide-react';
+import { Eye, EyeOff, ShieldCheck, ArrowRight, AlertTriangle, ShieldAlert } from 'lucide-react';
 
 interface OnlineRevealProps {
   settings: GameSettings;
   roomData: OnlineRoomData;
   secretWord: string;
   secretWordAlt?: string;
+  isImposter: boolean;
+  revealImposter?: boolean;
   myPlayer: Player;
   isHost: boolean;
 }
@@ -19,6 +21,8 @@ export default function OnlineReveal({
   roomData,
   secretWord,
   secretWordAlt,
+  isImposter,
+  revealImposter,
   myPlayer,
   isHost,
 }: OnlineRevealProps) {
@@ -28,6 +32,7 @@ export default function OnlineReveal({
   const [isWordExpired, setIsWordExpired] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [isAdvancing, setIsAdvancing] = useState(false);
+  const showImposterWarning = !!revealImposter && isImposter;
 
   // 5s Countdown
   useEffect(() => {
@@ -139,6 +144,18 @@ export default function OnlineReveal({
             </div>
 
             <div className="py-6 px-4 rounded-2xl bg-slate-950/80 border border-purple-500/40 shadow-inner">
+              {showImposterWarning && (
+                <div className="mb-4 rounded-xl border border-red-500/50 bg-red-950/50 px-3 py-2">
+                  <span className="flex items-center justify-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-red-300">
+                    <ShieldAlert className="h-3.5 w-3.5" />
+                    {t.imposterBadge}
+                  </span>
+                  <p className="mt-0.5 text-center text-sm font-black text-red-200">
+                    {t.youAreImposter}
+                  </p>
+                  <p className="text-center text-[10px] text-red-300/80">{t.imposterBlendHint}</p>
+                </div>
+              )}
               <span className="text-xs uppercase font-mono tracking-widest text-slate-400 block mb-1">
                 {t.yourSecretWord}
               </span>
