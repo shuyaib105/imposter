@@ -5,6 +5,7 @@ import { sendChatMessage, callForVoteOnline } from '../services/onlineEngine';
 import { OnlineRoomData, Player, GameSettings, ChatMessage } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { sound } from '../utils/sound';
+import AgentAvatar from '../components/AgentAvatar';
 import {
   MessageSquare,
   Send,
@@ -243,7 +244,13 @@ export default function OnlineDiscussion({
                   key={p.id}
                   className="flex items-center gap-2 p-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300"
                 >
-                  <span className="text-base">{p.avatar}</span>
+                  <AgentAvatar
+                    emoji={p.avatar}
+                    name={p.name}
+                    color={p.avatarColor}
+                    accessory={p.avatarAccessory}
+                    size="xs"
+                  />
                   <span className="font-bold truncate">{p.name}</span>
                 </div>
               ))}

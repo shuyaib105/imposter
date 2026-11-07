@@ -3,6 +3,7 @@ import { OnlineRoomData, Player, GameSettings } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { sound } from '../utils/sound';
 import { advanceToDiscussion } from '../services/onlineEngine';
+import AgentAvatar from '../components/AgentAvatar';
 import { Eye, EyeOff, ShieldCheck, ArrowRight, AlertTriangle, ShieldAlert } from 'lucide-react';
 
 interface OnlineRevealProps {
@@ -101,9 +102,15 @@ export default function OnlineReveal({
 
       {/* Top Header */}
       <div className="text-center space-y-2 mb-8">
-        <div className="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-br from-purple-600/30 via-slate-900 to-indigo-600/30 border-2 border-purple-500/40 flex items-center justify-center text-4xl shadow-xl shadow-purple-900/20">
-          {myPlayer.avatar}
-        </div>
+        <AgentAvatar
+          emoji={myPlayer.avatar}
+          name={myPlayer.name}
+          color={myPlayer.avatarColor}
+          accessory={myPlayer.avatarAccessory}
+          status={showImposterWarning ? 'imposter' : undefined}
+          size="xl"
+          className="mx-auto shadow-xl shadow-purple-900/20"
+        />
         <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">
           {myPlayer.name}
         </h2>

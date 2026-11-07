@@ -29,6 +29,7 @@ import { sound } from './utils/sound';
 import { hapticTap } from './utils/haptics';
 import { calculateWinningLogic } from './game/winningLogic';
 import { pickWordPair } from './game/wordSelection';
+import { accessoryFromSeed, colorFromSeed } from './game/avatar';
 import { loadRecentWordIds, rememberWordId } from './game/wordHistory';
 
 // Components
@@ -371,6 +372,8 @@ export default function App() {
     id: myPlayerId,
     name: 'You',
     avatar: '🕵️‍♂️',
+    avatarColor: colorFromSeed(myPlayerId),
+    avatarAccessory: accessoryFromSeed(myPlayerId),
   };
 
   return (

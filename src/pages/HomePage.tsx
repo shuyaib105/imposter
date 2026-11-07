@@ -1,6 +1,7 @@
 import { GameSettings, UserProfile } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { sound } from '../utils/sound';
+import AgentAvatar from '../components/AgentAvatar';
 import {
   Smartphone,
   Globe,
@@ -122,8 +123,15 @@ export default function HomePage({
             </div>
 
             <div className="flex gap-3.5 p-3.5">
-              <div className="relative flex h-[88px] w-[72px] shrink-0 items-center justify-center border border-slate-700/80 bg-slate-950 text-3xl">
-                {profile.avatar}
+              <div className="relative flex h-[88px] w-[72px] shrink-0 items-center justify-center border border-slate-700/80 bg-slate-950">
+                <AgentAvatar
+                  emoji={profile.avatar}
+                  name={displayName}
+                  color={profile.avatarColor}
+                  accessory={profile.avatarAccessory}
+                  size="portrait"
+                  className="absolute inset-0"
+                />
                 <span className="absolute -left-px -top-px h-2 w-2 border-l-2 border-t-2 border-purple-400/90" />
                 <span className="absolute -right-px -top-px h-2 w-2 border-r-2 border-t-2 border-purple-400/90" />
                 <span className="absolute -bottom-px -left-px h-2 w-2 border-b-2 border-l-2 border-purple-400/90" />

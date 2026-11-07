@@ -3,6 +3,7 @@ import confetti from 'canvas-confetti';
 import { Player, GameSettings, WinnerStatus } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { sound } from '../utils/sound';
+import AgentAvatar from '../components/AgentAvatar';
 import { Trophy, Skull, Scale, RotateCcw, Home, Hourglass, ArrowRight } from 'lucide-react';
 
 interface GameResultsProps {
@@ -124,7 +125,14 @@ export default function GameResults({
           {t.imposterWas}
         </span>
         <div className="flex items-center justify-center gap-3">
-          <span className="text-2xl">{imposter?.avatar || '🕵️'}</span>
+          <AgentAvatar
+            emoji={imposter?.avatar || '🕵️'}
+            name={imposter?.name}
+            color={imposter?.avatarColor}
+            accessory={imposter?.avatarAccessory}
+            status="imposter"
+            size="md"
+          />
           <span className="text-lg font-black text-white uppercase">
             {imposter?.name || t.unknownPlayer}
           </span>
@@ -174,9 +182,13 @@ export default function GameResults({
           </span>
           {myVoteTarget ? (
             <div className="flex items-center gap-3">
-              <span className="w-10 h-10 rounded-xl bg-slate-950/70 border border-indigo-500/30 flex items-center justify-center text-xl shrink-0">
-                {myVoteTarget.avatar}
-              </span>
+              <AgentAvatar
+                emoji={myVoteTarget.avatar}
+                name={myVoteTarget.name}
+                color={myVoteTarget.avatarColor}
+                accessory={myVoteTarget.avatarAccessory}
+                size="md"
+              />
               <div className="min-w-0">
                 <span className="text-[10px] font-mono text-slate-400 block">
                   {t.youVotedFor}
@@ -219,7 +231,14 @@ export default function GameResults({
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <span className="text-base">{p.avatar}</span>
+                    <AgentAvatar
+                      emoji={p.avatar}
+                      name={p.name}
+                      color={p.avatarColor}
+                      accessory={p.avatarAccessory}
+                      status={isImp ? 'imposter' : undefined}
+                      size="xs"
+                    />
                     <span className="font-bold text-white">{p.name}</span>
                     {isImp && (
                       <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-red-900/60 text-red-300 border border-red-500/30">
@@ -268,7 +287,14 @@ export default function GameResults({
                 }`}
               >
                 <div className="flex items-center gap-2 min-w-0">
-                  <span className="text-base shrink-0">{voter.avatar}</span>
+                  <AgentAvatar
+                    emoji={voter.avatar}
+                    name={voter.name}
+                    color={voter.avatarColor}
+                    accessory={voter.avatarAccessory}
+                    status={voter.id === imposterId ? 'imposter' : undefined}
+                    size="xs"
+                  />
                   <span className="text-xs font-bold text-slate-200 truncate">
                     {voter.name}
                     {isMe && <span className="text-indigo-300"> ({t.youTag})</span>}
@@ -279,7 +305,14 @@ export default function GameResults({
                   <ArrowRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                   {target ? (
                     <>
-                      <span className="text-base shrink-0">{target.avatar}</span>
+                      <AgentAvatar
+                        emoji={target.avatar}
+                        name={target.name}
+                        color={target.avatarColor}
+                        accessory={target.avatarAccessory}
+                        status={target.id === imposterId ? 'imposter' : undefined}
+                        size="xs"
+                      />
                       <span
                         className={`text-xs font-bold truncate ${
                           target.id === imposterId ? 'text-red-300' : 'text-white'

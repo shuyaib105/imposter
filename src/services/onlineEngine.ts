@@ -10,7 +10,8 @@ import {
 } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { signInAnonymously } from 'firebase/auth';
-import { OnlineRoomData, Player, ChatMessage, WordPair } from '../types';
+import { OnlineRoomData, Player, ChatMessage, WordPair, AvatarColor, AvatarAccessory } from '../types';
+import { colorFromSeed } from '../game/avatar';
 import { calculateWinningLogic } from '../game/winningLogic';
 
 // Robust client player ID manager that works without requiring Firebase Anonymous Auth
@@ -61,7 +62,9 @@ export async function createOnlineRoom(
   hostAvatar: string,
   mode: 'CHAT_ON' | 'CHAT_OFF',
   categories: string[],
-  difficulty: 'EASY' | 'MEDIUM' | 'HARD'
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD',
+  avatarColor?: AvatarColor,
+  avatarAccessory?: AvatarAccessory
 ): Promise<{ roomCode: string; playerId: string }> {
   const playerId = await ensurePlayerIdentity();
   const selectedCategories = categories.length > 0 ? categories : ['ALL'];
@@ -103,6 +106,8 @@ export async function createOnlineRoom(
     id: playerId,
     name: hostName,
     avatar: hostAvatar,
+    avatarColor: avatarColor ?? colorFromSeed(hostName),
+    avatarAccessory: avatarAccessory ?? 'none',
     isHost: true,
     isReady: true,
     isOnline: true,
@@ -117,7 +122,9 @@ export async function createOnlineRoom(
 export async function joinOnlineRoom(
   roomCode: string,
   playerName: string,
-  playerAvatar: string
+  playerAvatar: string,
+  avatarColor?: AvatarColor,
+  avatarAccessory?: AvatarAccessory
 ): Promise<{ success: boolean; error?: string; playerId?: string }> {
   const code = roomCode.trim().toUpperCase();
   const playerId = await ensurePlayerIdentity();
@@ -152,6 +159,8 @@ export async function joinOnlineRoom(
     id: playerId,
     name: playerName.trim(),
     avatar: playerAvatar,
+    avatarColor: avatarColor ?? colorFromSeed(playerName.trim()),
+    avatarAccessory: avatarAccessory ?? 'none',
     isHost: roomData.hostId === playerId,
     isReady: false,
     isOnline: true,

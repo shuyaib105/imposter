@@ -5,6 +5,7 @@ import { CATEGORIES } from '../data/words';
 import { sound } from '../utils/sound';
 import { createOnlineRoom, joinOnlineRoom } from '../services/onlineEngine';
 import { PlusCircle, LogIn, ArrowRight, ShieldAlert, MessageSquare, Radio } from 'lucide-react';
+import AgentAvatar from '../components/AgentAvatar';
 import PageHeader from '../components/PageHeader';
 
 interface OnlineSelectionProps {
@@ -77,7 +78,9 @@ export default function OnlineSelection({
         profile.avatar,
         onlineMode,
         categories,
-        difficulty
+        difficulty,
+        profile.avatarColor,
+        profile.avatarAccessory
       );
       onRoomJoined(res.roomCode, res.playerId);
     } catch (err) {
@@ -105,7 +108,13 @@ export default function OnlineSelection({
     try {
       setIsLoading(true);
       sound.playClick();
-      const res = await joinOnlineRoom(code, profileName, profile.avatar);
+      const res = await joinOnlineRoom(
+        code,
+        profileName,
+        profile.avatar,
+        profile.avatarColor,
+        profile.avatarAccessory
+      );
       if (!res.success) {
         if (res.error === 'ROOM_NOT_FOUND') setErrorMsg(t.roomNotFound);
         else if (res.error === 'ROOM_FULL') setErrorMsg(t.roomFull);
@@ -178,9 +187,13 @@ export default function OnlineSelection({
       {/* Identity comes from the saved profile — edit it from the profile screen only */}
       <div className="flex items-center justify-between gap-3 p-3 rounded-2xl bg-slate-900/80 border border-slate-800 mb-5">
         <div className="flex items-center gap-3 min-w-0">
-          <span className="w-11 h-11 rounded-xl bg-slate-950 border border-purple-500/30 flex items-center justify-center text-xl shrink-0">
-            {profile.avatar}
-          </span>
+          <AgentAvatar
+            emoji={profile.avatar}
+            name={profileName}
+            color={profile.avatarColor}
+            accessory={profile.avatarAccessory}
+            size="md"
+          />
           <div className="min-w-0">
             <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block">
               {t.myProfile}

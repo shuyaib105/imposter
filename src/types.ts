@@ -6,6 +6,10 @@ export type OnlineModeType = 'CHAT_ON' | 'CHAT_OFF';
 
 export type GameDifficulty = 'EASY' | 'MEDIUM' | 'HARD';
 
+export type AvatarColor = 'violet' | 'emerald' | 'amber' | 'rose' | 'sky' | 'slate';
+
+export type AvatarAccessory = 'none' | 'hat' | 'shades' | 'mask' | 'monocle';
+
 export type GamePhase =
   | 'HOME'
   | 'HOW_TO_PLAY'
@@ -36,6 +40,8 @@ export interface Player {
   isHost?: boolean;
   isReady?: boolean;
   isOnline?: boolean;
+  avatarColor?: AvatarColor;
+  avatarAccessory?: AvatarAccessory;
   hasVoted?: boolean;
   voteTargetId?: string;
 }
@@ -66,6 +72,8 @@ export interface GameSettings {
 export interface UserProfile {
   name: string;
   avatar: string;
+  avatarColor?: AvatarColor;
+  avatarAccessory?: AvatarAccessory;
 }
 
 export interface PlayerStats {

@@ -3,6 +3,7 @@ import { OnlineRoomData, Player, GameSettings } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { sound } from '../utils/sound';
 import { submitOnlineVote, endVotingEarly } from '../services/onlineEngine';
+import AgentAvatar from '../components/AgentAvatar';
 import { Vote, ShieldCheck, CheckCircle2, Clock, Flag } from 'lucide-react';
 
 interface OnlineVotingProps {
@@ -115,7 +116,13 @@ export default function OnlineVoting({
 
             {myVoteTarget && (
               <div className="flex items-center justify-center gap-2 p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
-                <span className="text-base">{myVoteTarget.avatar}</span>
+                <AgentAvatar
+                  emoji={myVoteTarget.avatar}
+                  name={myVoteTarget.name}
+                  color={myVoteTarget.avatarColor}
+                  accessory={myVoteTarget.avatarAccessory}
+                  size="xs"
+                />
                 <span className="text-[11px] font-mono text-slate-400">{t.youVotedFor}</span>
                 <span className="text-xs font-black text-white">{myVoteTarget.name}</span>
               </div>
@@ -154,9 +161,13 @@ export default function OnlineVoting({
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-xl bg-slate-800/80 border border-slate-700/60 flex items-center justify-center text-xl shrink-0">
-                      {p.avatar}
-                    </div>
+                    <AgentAvatar
+                      emoji={p.avatar}
+                      name={p.name}
+                      color={p.avatarColor}
+                      accessory={p.avatarAccessory}
+                      size="md"
+                    />
                     <div>
                       <span className="text-sm font-bold text-white block">
                         {p.name}

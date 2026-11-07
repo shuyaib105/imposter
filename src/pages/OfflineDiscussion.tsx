@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Player, GameSettings } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { sound } from '../utils/sound';
+import AgentAvatar from '../components/AgentAvatar';
 import { MessageSquare, Vote, Sparkles, CheckCircle2 } from 'lucide-react';
 
 interface OfflineDiscussionProps {
@@ -71,7 +72,13 @@ export default function OfflineDiscussion({
                 key={p.id}
                 className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-white"
               >
-                <span className="text-lg">{p.avatar}</span>
+                <AgentAvatar
+                  emoji={p.avatar}
+                  name={p.name}
+                  color={p.avatarColor}
+                  accessory={p.avatarAccessory}
+                  size="sm"
+                />
                 <span className="font-bold truncate">{p.name}</span>
               </div>
             ))}

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Player, GameSettings } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { sound } from '../utils/sound';
+import AgentAvatar from '../components/AgentAvatar';
 import { Vote, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
 interface OfflineVotingProps {
@@ -126,9 +127,13 @@ export default function OfflineVoting({
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-xl bg-slate-800/80 border border-slate-700/60 flex items-center justify-center text-xl shrink-0">
-                        {p.avatar}
-                      </div>
+                      <AgentAvatar
+                        emoji={p.avatar}
+                        name={p.name}
+                        color={p.avatarColor}
+                        accessory={p.avatarAccessory}
+                        size="md"
+                      />
                       <div>
                         <span className="text-sm font-bold text-white block">
                           {p.name}

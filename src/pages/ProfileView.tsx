@@ -1,8 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { GameSettings, UserProfile } from '../types';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { AvatarAccessory, AvatarColor, GameSettings, UserProfile } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { AVATARS } from '../data/words';
+import { AVATAR_COLORS, isAvatarUnlocked } from '../game/avatar';
+import { loadStats } from '../utils/storage';
 import AvatarPicker from '../components/AvatarPicker';
+import AgentAvatar from '../components/AgentAvatar';
 import { sound } from '../utils/sound';
 import { Check, Save, Shuffle, UserRound } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
@@ -16,8 +19,13 @@ interface ProfileViewProps {
 
 export default function ProfileView({ settings, profile, onSave, onBack }: ProfileViewProps) {
   const t = TRANSLATIONS[settings.language];
+  const stats = useMemo(() => loadStats(), []);
   const [name, setName] = useState(profile.name);
   const [avatar, setAvatar] = useState(profile.avatar);
+  const [avatarColor, setAvatarColor] = useState<AvatarColor>(profile.avatarColor ?? 'violet');
+  const [avatarAccessory, setAvatarAccessory] = useState<AvatarAccessory>(
+    profile.avatarAccessory ?? 'none'
+  );
   const [errorMsg, setErrorMsg] = useState('');
   const [saved, setSaved] = useState(false);
   const savedTimer = useRef<number | null>(null);
@@ -30,8 +38,9 @@ export default function ProfileView({ settings, profile, onSave, onBack }: Profi
 
   const handleShuffle = () => {
     sound.playClick();
-    const pool = AVATARS.filter((a) => a !== avatar);
+    const pool = AVATARS.filter((a) => a !== avatar && isAvatarUnlocked(a, stats));
     setAvatar(pool[Math.floor(Math.random() * pool.length)]);
+    setAvatarColor(AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)].id);
     setSaved(false);
   };
 
@@ -43,7 +52,7 @@ export default function ProfileView({ settings, profile, onSave, onBack }: Profi
       return;
     }
     sound.playClick();
-    onSave({ name: trimmed, avatar });
+    onSave({ name: trimmed, avatar, avatarColor, avatarAccessory });
     setName(trimmed);
     setErrorMsg('');
     setSaved(true);
@@ -69,9 +78,15 @@ export default function ProfileView({ settings, profile, onSave, onBack }: Profi
 
       {/* Profile preview */}
       <div className="p-5 rounded-3xl bg-gradient-to-br from-purple-950/60 via-slate-900 to-indigo-950/40 border border-purple-500/30 flex items-center gap-4 shadow-xl">
-        <div className="w-16 h-16 rounded-2xl bg-slate-950/80 border border-purple-500/40 flex items-center justify-center text-3xl shrink-0 shadow-lg shadow-purple-900/30">
-          {avatar}
-        </div>
+        <AgentAvatar
+          emoji={avatar}
+          name={name}
+          color={avatarColor}
+          accessory={avatarAccessory}
+          size="lg"
+          status="online"
+          className="shadow-lg shadow-purple-900/30"
+        />
         <div className="min-w-0">
           <span className="text-[10px] font-mono uppercase tracking-widest text-purple-300 block">
             {t.displayName}
@@ -116,10 +131,24 @@ export default function ProfileView({ settings, profile, onSave, onBack }: Profi
             </button>
           </div>
           <AvatarPicker
+            language={settings.language}
             value={avatar}
+            color={avatarColor}
+            accessory={avatarAccessory}
+            stats={stats}
             onChange={(av) => {
               sound.playClick();
               setAvatar(av);
+              setSaved(false);
+            }}
+            onColorChange={(next) => {
+              sound.playClick();
+              setAvatarColor(next);
+              setSaved(false);
+            }}
+            onAccessoryChange={(next) => {
+              sound.playClick();
+              setAvatarAccessory(next);
               setSaved(false);
             }}
           />

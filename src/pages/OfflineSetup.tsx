@@ -3,6 +3,8 @@ import { Player, GameSettings } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { AVATARS } from '../data/words';
 import { sound } from '../utils/sound';
+import { accessoryFromSeed, colorFromSeed } from '../game/avatar';
+import AgentAvatar from '../components/AgentAvatar';
 import { Users, UserPlus, Trash2, ArrowRight, ShieldAlert, Eye } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 
@@ -18,11 +20,16 @@ export default function OfflineSetup({ settings, onStartGame, onBack }: OfflineS
   const playerLabel = (index: number) =>
     settings.language === 'bn' ? `খেলোয়াড় ${index}` : `Player ${index}`;
 
-  const makePlayer = (index: number, id?: string): Player => ({
-    id: id ?? `p${index}`,
-    name: playerLabel(index),
-    avatar: AVATARS[(index - 1) % AVATARS.length],
-  });
+  const makePlayer = (index: number, id?: string): Player => {
+    const playerId = id ?? `p${index}`;
+    return {
+      id: playerId,
+      name: playerLabel(index),
+      avatar: AVATARS[(index - 1) % AVATARS.length],
+      avatarColor: colorFromSeed(playerId),
+      avatarAccessory: accessoryFromSeed(playerId),
+    };
+  };
 
   const [players, setPlayers] = useState<Player[]>(() => [1, 2, 3].map((i) => makePlayer(i)));
   const [revealImposter, setRevealImposter] = useState(false);
@@ -91,9 +98,13 @@ export default function OfflineSetup({ settings, onStartGame, onBack }: OfflineS
             className="flex items-center justify-between p-3 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-md hover:border-purple-500/40 transition shadow-sm"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-11 h-11 rounded-xl bg-purple-900/30 border border-purple-500/30 flex items-center justify-center text-xl shrink-0">
-                {p.avatar}
-              </div>
+              <AgentAvatar
+                emoji={p.avatar}
+                name={p.name}
+                color={p.avatarColor}
+                accessory={p.avatarAccessory}
+                size="md"
+              />
 
               <div className="min-w-0">
                 <span className="text-white font-bold text-sm block truncate">

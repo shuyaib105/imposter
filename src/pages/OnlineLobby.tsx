@@ -5,6 +5,7 @@ import { CATEGORIES } from '../data/words';
 import { pickWordPair } from '../game/wordSelection';
 import { loadRecentWordIds, rememberWordId } from '../game/wordHistory';
 import { sound } from '../utils/sound';
+import AgentAvatar from '../components/AgentAvatar';
 import {
   togglePlayerReady,
   leaveOnlineRoom,
@@ -362,9 +363,14 @@ export default function OnlineLobby({
                 className="flex items-center justify-between p-3 rounded-2xl bg-slate-900/70 border border-slate-800/80 text-xs"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-purple-900/30 border border-purple-500/30 flex items-center justify-center text-xl shrink-0">
-                    {p.avatar}
-                  </div>
+                  <AgentAvatar
+                    emoji={p.avatar}
+                    name={p.name}
+                    color={p.avatarColor}
+                    accessory={p.avatarAccessory}
+                    status={isThisHost ? 'host' : p.isReady ? 'ready' : 'online'}
+                    size="md"
+                  />
                   <div>
                     <div className="flex items-center gap-1.5">
                       <span className="font-bold text-white text-sm">{p.name}</span>

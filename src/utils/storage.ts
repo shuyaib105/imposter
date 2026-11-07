@@ -1,5 +1,6 @@
 import { PlayerStats, GameSettings, WinnerStatus, UserProfile } from '../types';
 import { AVATARS } from '../data/words';
+import { isAvatarAccessory, isAvatarColor } from '../game/avatar';
 
 const STATS_KEY = 'imposter_player_stats_v1';
 const SETTINGS_KEY = 'imposter_game_settings_v1';
@@ -8,7 +9,9 @@ const PROFILE_KEY = 'imposter_user_profile_v1';
 
 export const DEFAULT_PROFILE: UserProfile = {
   name: '',
-  avatar: AVATARS[0],
+  avatar: '',
+  avatarColor: 'violet',
+  avatarAccessory: 'none',
 };
 
 export const DEFAULT_SETTINGS: GameSettings = {
@@ -59,6 +62,12 @@ export function loadProfile(): UserProfile {
       return {
         name: typeof parsed.name === 'string' ? parsed.name.slice(0, 24) : '',
         avatar,
+        avatarColor: isAvatarColor(parsed.avatarColor)
+          ? parsed.avatarColor
+          : DEFAULT_PROFILE.avatarColor,
+        avatarAccessory: isAvatarAccessory(parsed.avatarAccessory)
+          ? parsed.avatarAccessory
+          : DEFAULT_PROFILE.avatarAccessory,
       };
     }
   } catch {}
