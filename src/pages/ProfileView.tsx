@@ -5,6 +5,7 @@ import { AVATARS } from '../data/words';
 import AvatarPicker from '../components/AvatarPicker';
 import { sound } from '../utils/sound';
 import { Check, Save, Shuffle, UserRound } from 'lucide-react';
+import PageHeader from '../components/PageHeader';
 
 interface ProfileViewProps {
   settings: GameSettings;
@@ -51,27 +52,20 @@ export default function ProfileView({ settings, profile, onSave, onBack }: Profi
   };
 
   return (
-    <div className="max-w-md mx-auto px-4 py-8 animate-fadeIn space-y-5">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-2">
-        <button
-          onClick={onBack}
-          className="text-xs uppercase font-mono tracking-widest text-slate-400 hover:text-white px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900/60 transition cursor-pointer"
-        >
-          ← {t.back}
-        </button>
-        <div className="flex items-center gap-1.5 text-xs font-mono text-purple-400">
-          <UserRound className="w-3.5 h-3.5" />
-          <span>{t.myProfile}</span>
-        </div>
-      </div>
-
-      <div className="text-center space-y-1">
-        <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-          {t.editProfile}
-        </h2>
-        <p className="text-slate-400 text-xs sm:text-sm">{t.profileSubtitle}</p>
-      </div>
+    <div className="max-w-md mx-auto px-4 py-6 animate-fadeIn space-y-5">
+      <PageHeader
+        title={t.editProfile}
+        subtitle={t.profileSubtitle}
+        code="ID / AGENT"
+        backLabel={t.back}
+        onBack={onBack}
+        right={
+          <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-purple-400">
+            <UserRound className="w-3.5 h-3.5" />
+            <span>{t.myProfile}</span>
+          </span>
+        }
+      />
 
       {/* Profile preview */}
       <div className="p-5 rounded-3xl bg-gradient-to-br from-purple-950/60 via-slate-900 to-indigo-950/40 border border-purple-500/30 flex items-center gap-4 shadow-xl">

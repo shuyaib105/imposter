@@ -74,12 +74,12 @@ export default function OnlineVoting({
     <div className="max-w-md mx-auto px-4 py-8 min-h-[80vh] flex flex-col justify-between animate-fadeIn">
       {/* Top Banner */}
       <div>
-        <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-6">
-          <span className="flex items-center gap-1.5 bg-slate-900 px-3 py-1 rounded-full border border-slate-800">
+        <div className="mb-6 flex items-center justify-between border-b border-slate-800/80 pb-2.5 font-mono text-[9px] uppercase tracking-[0.2em]">
+          <span className="flex items-center gap-1.5 border border-slate-800 bg-slate-900/70 px-2.5 py-1 text-slate-400">
             <Vote className="w-3.5 h-3.5 text-purple-400" />
             <span>{t.votingTitle}</span>
           </span>
-          <span className="bg-purple-950/60 border border-purple-500/30 text-purple-300 font-bold px-3 py-1 rounded-full flex items-center gap-1">
+          <span className="flex items-center gap-1 border border-purple-500/30 bg-purple-950/50 px-2.5 py-1 font-bold text-purple-300">
             <Clock className="w-3 h-3" />
             <span>
               {totalVoted} / {players.length} {t.votedStatus}
@@ -88,6 +88,9 @@ export default function OnlineVoting({
         </div>
 
         <div className="text-center space-y-1 mb-6">
+          <p className="font-mono text-[8px] uppercase tracking-[0.3em] text-purple-400/80">
+            <span className="text-slate-600">//</span> OP-02 / BALLOT
+          </p>
           <h2 className="text-xl sm:text-2xl font-black text-white">
             {t.votingQuestion}
           </h2>

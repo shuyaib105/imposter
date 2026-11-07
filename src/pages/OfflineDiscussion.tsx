@@ -27,6 +27,13 @@ export default function OfflineDiscussion({
     <div className="max-w-md mx-auto px-4 py-8 min-h-[80vh] flex flex-col justify-between animate-fadeIn">
       {/* Header */}
       <div>
+        <div className="mb-6 flex items-center justify-between border-b border-slate-800/80 pb-2.5 font-mono text-[8px] uppercase tracking-[0.26em] text-slate-500">
+          <span>
+            <span className="text-slate-600">//</span> OP-01 / DISCUSSION
+          </span>
+          <span>{players.length} {t.players}</span>
+        </div>
+
         <div className="text-center space-y-3 mb-8">
           <div className="w-16 h-16 mx-auto rounded-2xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-lg shadow-purple-600/10">
             <MessageSquare className="w-8 h-8" />

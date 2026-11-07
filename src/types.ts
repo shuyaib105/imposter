@@ -58,6 +58,7 @@ export interface GameSettings {
   musicEnabled: boolean;
   animationsEnabled: boolean;
   darkMode: boolean;
+  hapticsEnabled: boolean;
   defaultDifficulty: GameDifficulty;
   preferredCategories: string[];
   maxPlayers: number;

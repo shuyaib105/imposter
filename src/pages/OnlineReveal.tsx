@@ -84,6 +84,16 @@ export default function OnlineReveal({
 
   return (
     <div className="max-w-md mx-auto px-4 py-8 min-h-[80vh] flex flex-col justify-between animate-fadeIn">
+      <div className="mb-6 flex items-center justify-between border-b border-slate-800/80 pb-2.5 font-mono text-[8px] uppercase tracking-[0.26em] text-slate-500">
+        <span>
+          <span className="text-slate-600">//</span> OP-02 / REVEAL
+        </span>
+        <span className="flex items-center gap-1.5 text-emerald-400">
+          <span className="h-1.5 w-1.5 animate-blink rounded-full bg-emerald-400" />
+          Live
+        </span>
+      </div>
+
       {/* Top Header */}
       <div className="text-center space-y-2 mb-8">
         <div className="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-br from-purple-600/30 via-slate-900 to-indigo-600/30 border-2 border-purple-500/40 flex items-center justify-center text-4xl shadow-xl shadow-purple-900/20">
@@ -123,7 +133,7 @@ export default function OnlineReveal({
 
         {isRevealed && (
           <div className="p-6 rounded-3xl bg-gradient-to-b from-purple-950/60 to-slate-900/90 border-2 border-purple-400 text-center space-y-6 shadow-2xl animate-scaleUp">
-            <div className="flex items-center justify-center gap-2 text-xs font-mono text-amber-300 bg-amber-950/40 border border-amber-500/30 py-1.5 px-4 rounded-full w-fit mx-auto">
+            <div className="flex items-center justify-center gap-2 text-xs font-mono text-amber-300 bg-amber-950/40 border border-amber-500/30 py-1.5 px-3 w-fit mx-auto">
               <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
               <span>{t.hideWarning} {countdown} {t.seconds}</span>
             </div>

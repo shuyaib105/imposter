@@ -18,6 +18,7 @@ export const DEFAULT_SETTINGS: GameSettings = {
   musicEnabled: false,
   animationsEnabled: true,
   darkMode: true,
+  hapticsEnabled: true,
   defaultDifficulty: 'EASY',
   preferredCategories: ['Food & Drinks', 'Sports', 'Animals', 'Technology'],
   maxPlayers: 20,

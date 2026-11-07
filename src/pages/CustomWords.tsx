@@ -3,6 +3,7 @@ import { GameSettings, WordPair } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { sound } from '../utils/sound';
 import { Sparkles, PlusCircle, Trash2, BookPlus } from 'lucide-react';
+import PageHeader from '../components/PageHeader';
 
 interface CustomWordsProps {
   settings: GameSettings;
@@ -70,20 +71,19 @@ export default function CustomWords({
   };
 
   return (
-    <div className="max-w-md mx-auto px-4 py-8 animate-fadeIn space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <button
-          onClick={onBack}
-          className="text-xs uppercase font-mono tracking-widest text-slate-400 hover:text-white px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900/60 transition cursor-pointer"
-        >
-          ← {t.back}
-        </button>
-        <div className="flex items-center gap-1.5 text-xs font-mono text-purple-400">
-          <BookPlus className="w-3.5 h-3.5" />
-          <span>{t.customWords}</span>
-        </div>
-      </div>
+    <div className="max-w-md mx-auto px-4 py-6 animate-fadeIn space-y-6">
+      <PageHeader
+        title={t.customWords}
+        code="SYS / WORD BANK"
+        backLabel={t.back}
+        onBack={onBack}
+        right={
+          <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-purple-400">
+            <BookPlus className="w-3.5 h-3.5" />
+            <span>{String(customPairs.length).padStart(2, '0')}</span>
+          </span>
+        }
+      />
 
       {/* Add Pair Form */}
       <form onSubmit={handleAdd} className="p-5 rounded-3xl bg-slate-900/80 border border-slate-800 space-y-3">

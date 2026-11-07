@@ -88,18 +88,21 @@ export default function OfflineReveal({
     <div className="max-w-md mx-auto px-4 py-8 min-h-[80vh] flex flex-col justify-between animate-fadeIn">
       {/* Top indicator */}
       <div>
-        <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-6">
-          <span className="flex items-center gap-1.5 bg-slate-900 px-3 py-1 rounded-full border border-slate-800">
+        <div className="mb-6 flex items-center justify-between border-b border-slate-800/80 pb-2.5 font-mono text-[9px] uppercase tracking-[0.2em]">
+          <span className="flex items-center gap-1.5 border border-slate-800 bg-slate-900/70 px-2.5 py-1 text-slate-400">
             <Smartphone className="w-3.5 h-3.5 text-purple-400" />
             <span>{t.passAndPlay}</span>
           </span>
-          <span className="bg-purple-950/60 border border-purple-500/30 text-purple-300 font-bold px-3 py-1 rounded-full">
+          <span className="border border-purple-500/30 bg-purple-950/50 px-2.5 py-1 font-bold text-purple-300">
             {currentIndex + 1} / {players.length}
           </span>
         </div>
 
         {/* Current Player Card Header */}
         <div className="text-center space-y-2 mb-8">
+          <p className="font-mono text-[8px] uppercase tracking-[0.3em] text-purple-400/80">
+            <span className="text-slate-600">//</span> OP-01 / REVEAL
+          </p>
           <div className="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-br from-purple-600/30 via-slate-900 to-indigo-600/30 border-2 border-purple-500/40 flex items-center justify-center text-4xl shadow-xl shadow-purple-900/20">
             {currentPlayer.avatar}
           </div>
@@ -134,7 +137,7 @@ export default function OfflineReveal({
         {/* Active Revealed State with 5s countdown */}
         {isRevealed && (
           <div className="p-6 rounded-3xl bg-gradient-to-b from-purple-950/60 to-slate-900/90 border-2 border-purple-400 text-center space-y-6 shadow-2xl animate-scaleUp">
-            <div className="flex items-center justify-center gap-2 text-xs font-mono text-amber-300 bg-amber-950/40 border border-amber-500/30 py-1.5 px-4 rounded-full w-fit mx-auto">
+            <div className="flex items-center justify-center gap-2 text-xs font-mono text-amber-300 bg-amber-950/40 border border-amber-500/30 py-1.5 px-3 w-fit mx-auto">
               <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
               <span>{t.hideWarning} {countdown} {t.seconds}</span>
             </div>

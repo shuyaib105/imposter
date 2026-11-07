@@ -4,6 +4,7 @@ import { TRANSLATIONS } from '../data/translations';
 import { loadStats, resetStats } from '../utils/storage';
 import { sound } from '../utils/sound';
 import { BarChart3, Trophy, Skull, Scale, Award } from 'lucide-react';
+import PageHeader from '../components/PageHeader';
 
 interface StatsViewProps {
   settings: GameSettings;
@@ -27,20 +28,19 @@ export default function StatsView({ settings, onBack }: StatsViewProps) {
     : 0;
 
   return (
-    <div className="max-w-md mx-auto px-4 py-8 animate-fadeIn space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <button
-          onClick={onBack}
-          className="text-xs uppercase font-mono tracking-widest text-slate-400 hover:text-white px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900/60 transition cursor-pointer"
-        >
-          ← {t.back}
-        </button>
-        <div className="flex items-center gap-1.5 text-xs font-mono text-purple-400">
-          <BarChart3 className="w-3.5 h-3.5" />
-          <span>{t.stats}</span>
-        </div>
-      </div>
+    <div className="max-w-md mx-auto px-4 py-6 animate-fadeIn space-y-6">
+      <PageHeader
+        title={t.stats}
+        code="SYS / STATS"
+        backLabel={t.back}
+        onBack={onBack}
+        right={
+          <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-purple-400">
+            <BarChart3 className="w-3.5 h-3.5" />
+            <span>{t.stats}</span>
+          </span>
+        }
+      />
 
       {/* Win rate card */}
       <div className="p-6 rounded-3xl bg-gradient-to-br from-purple-950/70 via-slate-900 to-indigo-950/50 border border-purple-500/40 text-center space-y-2 shadow-xl">

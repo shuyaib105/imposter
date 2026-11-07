@@ -4,6 +4,7 @@ import { TRANSLATIONS } from '../data/translations';
 import { AVATARS } from '../data/words';
 import { sound } from '../utils/sound';
 import { Users, UserPlus, Trash2, ArrowRight, ShieldAlert } from 'lucide-react';
+import PageHeader from '../components/PageHeader';
 
 interface OfflineSetupProps {
   settings: GameSettings;
@@ -59,27 +60,20 @@ export default function OfflineSetup({ settings, onStartGame, onBack }: OfflineS
   };
 
   return (
-    <div className="max-w-xl mx-auto px-4 py-8 animate-fadeIn">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <button
-          onClick={onBack}
-          className="text-xs uppercase font-mono tracking-widest text-slate-400 hover:text-white px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900/60 transition cursor-pointer"
-        >
-          ← {t.back}
-        </button>
-        <div className="flex items-center gap-2 bg-purple-950/40 border border-purple-500/30 px-3 py-1 rounded-full text-xs font-mono text-purple-300">
-          <Users className="w-3.5 h-3.5 text-purple-400" />
-          <span>{players.length} / {settings.maxPlayers} {t.totalPlayers}</span>
-        </div>
-      </div>
-
-      <div className="text-center mb-6">
-        <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center justify-center gap-2">
-          <span>{t.offlineTitle}</span>
-        </h2>
-        <p className="text-slate-400 text-xs sm:text-sm mt-1">{t.offlineDesc}</p>
-      </div>
+    <div className="max-w-md mx-auto px-4 py-6 animate-fadeIn">
+      <PageHeader
+        title={t.offlineTitle}
+        subtitle={t.offlineDesc}
+        code="OP-01 / SETUP"
+        backLabel={t.back}
+        onBack={onBack}
+        right={
+          <div className="flex items-center gap-2 border border-purple-500/30 bg-purple-950/40 px-2.5 py-1 font-mono text-[10px] text-purple-300">
+            <Users className="w-3.5 h-3.5 text-purple-400" />
+            <span>{players.length} / {settings.maxPlayers} {t.totalPlayers}</span>
+          </div>
+        }
+      />
 
       {errorMsg && (
         <div className="mb-4 p-3 rounded-xl bg-red-950/50 border border-red-500/40 text-red-300 text-xs flex items-center gap-2 animate-shake">

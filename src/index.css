@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+/* Dossier UI: every panel is a sharp-edged file, so recolour the radius scale */
+@theme {
+  --radius-sm: 0.125rem;
+  --radius-md: 0.125rem;
+  --radius-lg: 0.125rem;
+  --radius-xl: 0.125rem;
+  --radius-2xl: 0.125rem;
+  --radius-3xl: 0.125rem;
+}
+
 /* Self-hosted Anek Bangla so Bangla text renders even without Google Fonts */
 @font-face {
   font-family: "Anek Bangla";
@@ -48,6 +58,31 @@
     40%, 80% { transform: translateX(4px); }
   }
 
+  @keyframes pageIn {
+    from { opacity: 0; transform: translate3d(0, 10px, 0) scale(0.995); }
+    to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  }
+
+  @keyframes sheetUp {
+    from { opacity: 0; transform: translate3d(0, 100%, 0); }
+    to { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
+
+  @keyframes backdropIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes stampIn {
+    from { opacity: 0; transform: scale(1.6); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes blinkDot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
   .animate-fadeIn {
     animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
@@ -58,6 +93,46 @@
 
   .animate-shake {
     animation: shake 0.35s ease-in-out;
+  }
+
+  .animate-pageIn {
+    animation: pageIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .animate-sheetUp {
+    animation: sheetUp 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .animate-backdropIn {
+    animation: backdropIn 0.22s ease-out both;
+  }
+
+  .animate-stampIn {
+    animation: stampIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+  }
+
+  .animate-blink {
+    animation: blinkDot 1.8s ease-in-out infinite;
+  }
+
+  /* Faint tactical grid behind the dossier home screen */
+  .dossier-grid {
+    background-image:
+      linear-gradient(to right, rgba(148, 163, 184, 0.16) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(148, 163, 184, 0.16) 1px, transparent 1px);
+    background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(ellipse at 50% 25%, #000 45%, transparent 88%);
+    mask-image: radial-gradient(ellipse at 50% 25%, #000 45%, transparent 88%);
+  }
+
+  /* Native-style press feedback for touch surfaces */
+  .pressable {
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.14s cubic-bezier(0.16, 1, 0.3, 1), filter 0.14s ease-out;
+  }
+  .pressable:active {
+    transform: scale(0.97);
+    filter: brightness(0.92);
   }
 
   .no-scrollbar::-webkit-scrollbar {
@@ -75,6 +150,25 @@
 .reduce-motion *::after {
   animation: none !important;
   transition: none !important;
+}
+
+/* Dossier scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #334155 transparent;
+}
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+html.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
 }
 
 /* ---------------------------------------------------------------------------

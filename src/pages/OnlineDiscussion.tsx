@@ -95,6 +95,16 @@ export default function OnlineDiscussion({
     <div className="max-w-lg mx-auto px-4 py-4 min-h-[85vh] flex flex-col justify-between animate-fadeIn">
       {/* Top Banner with Secret Word Toggle & Call for Vote Action */}
       <div className="space-y-3 mb-3">
+        <div className="flex items-center justify-between border-b border-slate-800/80 pb-2 font-mono text-[8px] uppercase tracking-[0.26em] text-slate-500">
+          <span>
+            <span className="text-slate-600">//</span> OP-02 / DISCUSSION
+          </span>
+          <span className="flex items-center gap-1.5 text-emerald-400">
+            <span className="h-1.5 w-1.5 animate-blink rounded-full bg-emerald-400" />
+            Live
+          </span>
+        </div>
+
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -242,14 +252,15 @@ export default function OnlineDiscussion({
         </div>
       )}
 
-      {/* Separate confirmation dialog — calling the vote closes discussion for everyone */}
+      {/* Separate confirmation sheet — calling the vote closes discussion for everyone */}
       {showCallConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm px-6">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-950/80 backdrop-blur-sm animate-backdropIn px-0 sm:px-6">
           <div
             role="dialog"
             aria-modal="true"
-            className="w-full max-w-xs p-5 rounded-3xl bg-slate-900 border border-purple-500/50 space-y-4 shadow-2xl animate-scaleUp"
+            className="w-full sm:max-w-xs px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+20px)] sm:pb-5 rounded-t-3xl sm:rounded-3xl bg-slate-900 border-t sm:border border-purple-500/50 space-y-4 shadow-2xl animate-sheetUp"
           >
+            <div className="sm:hidden mx-auto mb-1 h-1.5 w-10 rounded-full bg-slate-700" aria-hidden="true" />
             <div className="w-12 h-12 mx-auto rounded-2xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center">
               <Vote className="w-6 h-6 text-purple-300" />
             </div>
@@ -267,14 +278,14 @@ export default function OnlineDiscussion({
                   setErrorMsg('');
                 }}
                 disabled={isCallingVote}
-                className="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs uppercase cursor-pointer disabled:opacity-60"
+                className="pressable flex-1 py-3 sm:py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs uppercase cursor-pointer disabled:opacity-60"
               >
                 {t.cancel}
               </button>
               <button
                 onClick={handleCallForVote}
                 disabled={isCallingVote}
-                className="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs uppercase cursor-pointer shadow-lg disabled:opacity-60"
+                className="pressable flex-1 py-3 sm:py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs uppercase cursor-pointer shadow-lg disabled:opacity-60"
               >
                 {isCallingVote ? t.calling : t.confirm}
               </button>

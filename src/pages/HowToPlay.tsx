@@ -1,6 +1,7 @@
 import { GameSettings } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { BookOpen, ShieldAlert, Users, Trophy, Sparkles } from 'lucide-react';
+import PageHeader from '../components/PageHeader';
 
 interface HowToPlayProps {
   settings: GameSettings;
@@ -11,20 +12,19 @@ export default function HowToPlay({ settings, onBack }: HowToPlayProps) {
   const t = TRANSLATIONS[settings.language];
 
   return (
-    <div className="max-w-md mx-auto px-4 py-8 animate-fadeIn space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <button
-          onClick={onBack}
-          className="text-xs uppercase font-mono tracking-widest text-slate-400 hover:text-white px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900/60 transition cursor-pointer"
-        >
-          ← {t.back}
-        </button>
-        <div className="flex items-center gap-1.5 text-xs font-mono text-purple-400">
-          <BookOpen className="w-3.5 h-3.5" />
-          <span>{t.howToPlay}</span>
-        </div>
-      </div>
+    <div className="max-w-md mx-auto px-4 py-6 animate-fadeIn space-y-6">
+      <PageHeader
+        title={t.howToPlay}
+        code="SYS / FIELD MANUAL"
+        backLabel={t.back}
+        onBack={onBack}
+        right={
+          <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-purple-400">
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>{t.howToPlay}</span>
+          </span>
+        }
+      />
 
       {/* Main Overview */}
       <div className="p-5 rounded-3xl bg-gradient-to-br from-purple-950/60 via-slate-900 to-indigo-950/40 border border-purple-500/30 space-y-2 shadow-xl">

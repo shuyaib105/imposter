@@ -49,6 +49,10 @@ export function pickWordPair(
     if (byPreference.length > 0) pool = byPreference;
   }
 
+  // Category-level pool before the difficulty slice, so a used-up difficulty
+  // can fall back to other difficulties inside the same category.
+  const categoryPool = pool;
+
   if (difficulty) {
     // Custom pairs have no authored difficulty, so keep them eligible at every
     // level instead of silently hiding the words the player created.
@@ -62,11 +66,18 @@ export function pickWordPair(
     if (fresh.length > 0) {
       pool = fresh;
     } else {
-      // A small category can be fully exhausted; at minimum avoid repeating the
-      // exact pair that was played most recently.
-      const lastUsed = excludeIds[excludeIds.length - 1];
-      const withoutLast = pool.filter((p) => p.id !== lastUsed);
-      if (withoutLast.length > 0) pool = withoutLast;
+      // The difficulty slice is used up. Widen to the whole selected category so
+      // a fresh word is preferred over repeating a recently played one.
+      const freshInCategory = categoryPool.filter((p) => !excluded.has(p.id));
+      if (freshInCategory.length > 0) {
+        pool = freshInCategory;
+      } else {
+        // A small category can be fully exhausted; at minimum avoid repeating the
+        // exact pair that was played most recently.
+        const lastUsed = excludeIds[excludeIds.length - 1];
+        const withoutLast = pool.filter((p) => p.id !== lastUsed);
+        if (withoutLast.length > 0) pool = withoutLast;
+      }
     }
   }
 

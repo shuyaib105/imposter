@@ -5,6 +5,7 @@ import { CATEGORIES, CUSTOM_CATEGORY_ID } from '../data/words';
 import { sound } from '../utils/sound';
 import { createOnlineRoom, joinOnlineRoom } from '../services/onlineEngine';
 import { PlusCircle, LogIn, ArrowRight, ShieldAlert, MessageSquare, Radio } from 'lucide-react';
+import PageHeader from '../components/PageHeader';
 
 interface OnlineSelectionProps {
   settings: GameSettings;
@@ -135,28 +136,19 @@ export default function OnlineSelection({
   };
 
   return (
-    <div className="max-w-md mx-auto px-4 py-8 animate-fadeIn">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <button
-          onClick={onBack}
-          className="text-xs uppercase font-mono tracking-widest text-slate-400 hover:text-white px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900/60 transition cursor-pointer"
-        >
-          ← {t.back}
-        </button>
-        <span className="text-xs font-mono text-purple-400 bg-purple-950/40 border border-purple-500/30 px-3 py-1 rounded-full">
-          {t.realtimeOnline}
-        </span>
-      </div>
-
-      <div className="text-center mb-6">
-        <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-          {t.playOnline}
-        </h2>
-        <p className="text-slate-400 text-xs sm:text-sm mt-1">
-          {t.onlineSubtitle}
-        </p>
-      </div>
+    <div className="max-w-md mx-auto px-4 py-6 animate-fadeIn">
+      <PageHeader
+        title={t.playOnline}
+        subtitle={t.onlineSubtitle}
+        code="OP-02 / ONLINE"
+        backLabel={t.back}
+        onBack={onBack}
+        right={
+          <span className="border border-purple-500/30 bg-purple-950/40 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-purple-300">
+            {t.realtimeOnline}
+          </span>
+        }
+      />
 
       {/* Tabs */}
       <div className="flex bg-slate-900/80 p-1 rounded-2xl border border-slate-800 mb-6">

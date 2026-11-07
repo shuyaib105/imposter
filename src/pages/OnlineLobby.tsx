@@ -25,6 +25,7 @@ import {
   Sparkles,
   UserX,
 } from 'lucide-react';
+import PageHeader from '../components/PageHeader';
 
 interface OnlineLobbyProps {
   settings: GameSettings;
@@ -203,22 +204,20 @@ export default function OnlineLobby({
   };
 
   return (
-    <div className="max-w-md mx-auto px-4 py-8 animate-fadeIn space-y-6">
-      {/* Top Header */}
-      <div className="flex items-center justify-between">
-        <button
-          onClick={handleLeaveRoom}
-          className="text-xs uppercase font-mono tracking-wider text-slate-400 hover:text-red-400 px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900/60 transition flex items-center gap-1.5 cursor-pointer"
-        >
-          <LogOut className="w-3.5 h-3.5" />
-          <span>{t.leaveRoom}</span>
-        </button>
-
-        <div className="flex items-center gap-1.5 text-xs font-mono text-purple-300 bg-purple-950/40 border border-purple-500/30 px-3 py-1 rounded-full">
-          <Users className="w-3.5 h-3.5 text-purple-400" />
-          <span>{players.length} / 20</span>
-        </div>
-      </div>
+    <div className="max-w-md mx-auto px-4 py-6 animate-fadeIn space-y-6">
+      <PageHeader
+        title={t.lobbyTitle}
+        code="OP-02 / LOBBY"
+        backLabel={t.leaveRoom}
+        backIcon={LogOut}
+        onBack={handleLeaveRoom}
+        right={
+          <div className="flex items-center gap-1.5 border border-purple-500/30 bg-purple-950/40 px-2.5 py-1 font-mono text-[10px] text-purple-300">
+            <Users className="w-3.5 h-3.5 text-purple-400" />
+            <span>{players.length} / 20</span>
+          </div>
+        }
+      />
 
       {/* Room Code Showcase Banner */}
       <div className="p-6 rounded-3xl bg-gradient-to-br from-purple-950/80 via-slate-900 to-indigo-950/60 border-2 border-purple-500/50 text-center space-y-3 shadow-2xl backdrop-blur-xl">

@@ -3,7 +3,9 @@ import { GameSettings, GameDifficulty } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { CATEGORIES } from '../data/words';
 import { sound } from '../utils/sound';
+import { hapticTap } from '../utils/haptics';
 import { saveSettings } from '../utils/storage';
+import PageHeader from '../components/PageHeader';
 import {
   Settings as SettingsIcon,
   Volume2,
@@ -13,6 +15,7 @@ import {
   Check,
   Moon,
   Sun,
+  Vibrate,
 } from 'lucide-react';
 
 interface SettingsModalProps {
@@ -54,6 +57,15 @@ export default function SettingsView({
     saveSettings(updated);
   };
 
+  const handleToggleHaptics = () => {
+    sound.playClick();
+    const updated = { ...current, hapticsEnabled: !current.hapticsEnabled };
+    setCurrent(updated);
+    onUpdateSettings(updated);
+    saveSettings(updated);
+    if (updated.hapticsEnabled) hapticTap(18);
+  };
+
   const handleToggleTheme = () => {
     sound.playClick();
     const updated = { ...current, darkMode: !current.darkMode };
@@ -87,20 +99,19 @@ export default function SettingsView({
   };
 
   return (
-    <div className="max-w-md mx-auto px-4 py-8 animate-fadeIn space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <button
-          onClick={onBack}
-          className="text-xs uppercase font-mono tracking-widest text-slate-400 hover:text-white px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900/60 transition cursor-pointer"
-        >
-          ← {t.back}
-        </button>
-        <div className="flex items-center gap-1.5 text-xs font-mono text-purple-400">
-          <SettingsIcon className="w-3.5 h-3.5" />
-          <span>{t.settings}</span>
-        </div>
-      </div>
+    <div className="max-w-md mx-auto px-4 py-6 animate-fadeIn space-y-6">
+      <PageHeader
+        title={t.settings}
+        code="SYS / CONFIG"
+        backLabel={t.back}
+        onBack={onBack}
+        right={
+          <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-purple-400">
+            <SettingsIcon className="w-3.5 h-3.5" />
+            <span>{t.settings}</span>
+          </span>
+        }
+      />
 
       <div className="space-y-4">
         {/* Language selector */}
@@ -203,6 +214,28 @@ export default function SettingsView({
               <div
                 className={`w-5 h-5 rounded-full bg-[#fff] transition-transform absolute top-0.5 ${
                   current.animationsEnabled ? 'translate-x-6' : 'translate-x-0.5'
+                }`}
+              />
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between pt-2 border-t border-slate-800/80">
+            <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
+              <Vibrate className="w-4 h-4 text-purple-400" />
+              <span>{t.hapticsEnabled}</span>
+            </div>
+            <button
+              onClick={handleToggleHaptics}
+              role="switch"
+              aria-checked={current.hapticsEnabled}
+              aria-label={t.hapticsEnabled}
+              className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer ${
+                current.hapticsEnabled ? 'bg-purple-600' : 'bg-slate-800'
+              }`}
+            >
+              <div
+                className={`w-5 h-5 rounded-full bg-[#fff] transition-transform absolute top-0.5 ${
+                  current.hapticsEnabled ? 'translate-x-6' : 'translate-x-0.5'
                 }`}
               />
             </button>

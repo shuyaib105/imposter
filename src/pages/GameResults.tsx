@@ -80,7 +80,14 @@ export default function GameResults({
   };
 
   return (
-    <div className="max-w-md mx-auto px-4 py-8 animate-fadeIn space-y-6">
+    <div className="max-w-md mx-auto px-4 py-6 animate-fadeIn space-y-6">
+      <div className="flex items-center justify-between border-b border-slate-800/80 pb-2.5 font-mono text-[8px] uppercase tracking-[0.28em] text-slate-500">
+        <span>
+          <span className="mr-1.5 text-red-500">●</span> Debrief // Case Closed
+        </span>
+        <span className="text-slate-600">{String(players.length).padStart(2, '0')} Files</span>
+      </div>
+
       {/* Winner Hero Banner */}
       <div
         className={`p-6 rounded-3xl border text-center space-y-3 shadow-2xl relative overflow-hidden backdrop-blur-xl ${

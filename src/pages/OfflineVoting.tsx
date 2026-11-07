@@ -87,19 +87,19 @@ export default function OfflineVoting({
         <>
           {/* Header */}
           <div>
-            <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-6">
-              <span className="flex items-center gap-1.5 bg-slate-900 px-3 py-1 rounded-full border border-slate-800">
+            <div className="mb-6 flex items-center justify-between border-b border-slate-800/80 pb-2.5 font-mono text-[9px] uppercase tracking-[0.2em]">
+              <span className="flex items-center gap-1.5 border border-slate-800 bg-slate-900/70 px-2.5 py-1 text-slate-400">
                 <Vote className="w-3.5 h-3.5 text-purple-400" />
                 <span>{t.privateBallot}</span>
               </span>
-              <span className="bg-purple-950/60 border border-purple-500/30 text-purple-300 font-bold px-3 py-1 rounded-full">
+              <span className="border border-purple-500/30 bg-purple-950/50 px-2.5 py-1 font-bold text-purple-300">
                 {currentVoterIndex + 1} / {players.length}
               </span>
             </div>
 
             <div className="text-center space-y-1 mb-6">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-purple-400">
-                {currentVoter.name} • {t.votingTitle}
+              <span className="font-mono text-[8px] uppercase tracking-[0.3em] text-purple-400/80">
+                <span className="text-slate-600">//</span> OP-01 / BALLOT · {currentVoter.name}
               </span>
               <h2 className="text-xl sm:text-2xl font-black text-white">
                 {t.votingQuestion}

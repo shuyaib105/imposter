@@ -29,9 +29,13 @@ import {
   saveProfile,
 } from './utils/storage';
 import { sound } from './utils/sound';
+import { hapticTap } from './utils/haptics';
 import { calculateWinningLogic } from './game/winningLogic';
 import { pickWordPair } from './game/wordSelection';
 import { loadRecentWordIds, rememberWordId } from './game/wordHistory';
+
+// Components
+import BottomNav from './components/BottomNav';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -66,6 +70,11 @@ export default function App() {
   const [profile, setProfile] = useState<UserProfile>(loadProfile);
   const [customWords, setCustomWords] = useState<WordPair[]>(loadCustomWords);
   const t = TRANSLATIONS[settings.language];
+
+  // Bottom tab bar is only shown on the app's top-level destinations
+  const showNav: boolean = (
+    ['HOME', 'STATS', 'CUSTOM_WORDS', 'SETTINGS'] as GamePhase[]
+  ).includes(phase);
 
   // -------------------------------------------------------------
   // Offline Game State
@@ -120,6 +129,26 @@ export default function App() {
       themeMeta.setAttribute('content', settings.darkMode ? '#070b16' : '#eef2f8');
     }
   }, [settings.darkMode]);
+
+  // Each screen starts at the top, like a native stack push
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [phase]);
+
+  // Haptic tick on any interactive tap (mobile-native feel)
+  useEffect(() => {
+    if (!settings.hapticsEnabled) return;
+    const selector = 'button, a, [role="button"], [role="switch"], [role="tab"]';
+    const handlePointerDown = (e: PointerEvent) => {
+      const target = e.target as Element | null;
+      if (!target?.closest) return;
+      const el = target.closest(selector) as HTMLElement | null;
+      if (!el || el.hasAttribute('disabled') || el.getAttribute('aria-disabled') === 'true') return;
+      hapticTap();
+    };
+    document.addEventListener('pointerdown', handlePointerDown, { passive: true });
+    return () => document.removeEventListener('pointerdown', handlePointerDown);
+  }, [settings.hapticsEnabled]);
 
   // Keep the online session across a page refresh (per browser tab)
   useEffect(() => {
@@ -368,13 +397,19 @@ export default function App() {
         settings.animationsEnabled ? '' : 'reduce-motion'
       }`}
     >
-      {/* Background radial glow effect */}
+      {/* Background radial glow + dossier grid */}
       <div className="fixed inset-0 pointer-events-none opacity-40">
         <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl" />
         <div className="absolute -bottom-32 right-1/4 w-96 h-96 bg-blue-600/15 rounded-full blur-3xl" />
       </div>
+      <div className="pointer-events-none fixed inset-0 dossier-grid opacity-50" aria-hidden="true" />
 
-      <main className="relative z-10 flex-1 flex flex-col">
+      <main
+        key={phase}
+        className={`relative z-10 flex-1 flex flex-col animate-pageIn ${
+          showNav ? 'pb-[calc(env(safe-area-inset-bottom)+88px)]' : ''
+        }`}
+      >
         {/* 1. HOME */}
         {phase === 'HOME' && (
           <HomePage
@@ -390,9 +425,6 @@ export default function App() {
             onSelectOffline={() => setPhase('OFFLINE_SETUP')}
             onSelectOnline={() => setPhase('ONLINE_ROOM_SELECTION')}
             onSelectHowToPlay={() => setPhase('HOW_TO_PLAY')}
-            onSelectSettings={() => setPhase('SETTINGS')}
-            onSelectStats={() => setPhase('STATS')}
-            onSelectCustomWords={() => setPhase('CUSTOM_WORDS')}
           />
         )}
 
@@ -630,6 +662,10 @@ export default function App() {
           />
         )}
       </main>
+
+      {showNav && (
+        <BottomNav settings={settings} activePhase={phase} onNavigate={setPhase} />
+      )}
     </div>
   );
 }

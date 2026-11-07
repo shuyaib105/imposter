@@ -5,9 +5,6 @@ import {
   Smartphone,
   Globe,
   BookOpen,
-  Settings,
-  BarChart3,
-  BookPlus,
   Users,
   Eye,
   Vote,
@@ -15,6 +12,7 @@ import {
   Pencil,
   Moon,
   Sun,
+  ArrowRight,
 } from 'lucide-react';
 
 interface HomePageProps {
@@ -25,9 +23,6 @@ interface HomePageProps {
   onSelectOffline: () => void;
   onSelectOnline: () => void;
   onSelectHowToPlay: () => void;
-  onSelectSettings: () => void;
-  onSelectStats: () => void;
-  onSelectCustomWords: () => void;
 }
 
 export default function HomePage({
@@ -38,196 +33,231 @@ export default function HomePage({
   onSelectOffline,
   onSelectOnline,
   onSelectHowToPlay,
-  onSelectSettings,
-  onSelectStats,
-  onSelectCustomWords,
 }: HomePageProps) {
   const t = TRANSLATIONS[settings.language];
+  const displayName = profile.name.trim() || t.setUpProfile;
+  const difficultyLabel =
+    settings.defaultDifficulty === 'EASY'
+      ? t.difficultyEasy
+      : settings.defaultDifficulty === 'MEDIUM'
+        ? t.difficultyMedium
+        : t.difficultyHard;
+
+  const phases = [
+    { Icon: Users, label: t.flowPlayers, color: 'text-purple-400' },
+    { Icon: Eye, label: t.flowSecret, color: 'text-pink-400' },
+    { Icon: Vote, label: t.flowVote, color: 'text-indigo-400' },
+    { Icon: Trophy, label: t.flowVictory, color: 'text-amber-400' },
+  ];
 
   return (
-    <div className="relative max-w-md mx-auto px-4 py-8 min-h-[90vh] flex flex-col justify-between animate-fadeIn">
-      {/* Quick theme switch */}
-      <button
-        onClick={() => {
-          sound.playClick();
-          onToggleTheme();
-        }}
-        title={settings.darkMode ? t.lightMode : t.darkMode}
-        aria-label={settings.darkMode ? t.lightMode : t.darkMode}
-        className="absolute top-4 right-4 w-10 h-10 rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 hover:text-white hover:border-purple-500/60 transition flex items-center justify-center cursor-pointer z-10"
-      >
-        {settings.darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-      </button>
-
-      {/* Top Brand & Logo */}
-      <div className="text-center space-y-4 pt-4">
-        {/* Animated Brand Badge */}
-        <div className="relative inline-flex items-center justify-center">
-          <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-purple-600 via-violet-600 to-indigo-600 p-0.5 shadow-2xl shadow-purple-600/30 animate-pulse">
-            <div className="w-full h-full bg-slate-950 rounded-[22px] flex items-center justify-center text-4xl">
-              🕵️‍♂️
-            </div>
+    <div className="relative mx-auto flex min-h-[90vh] w-full max-w-md flex-col px-4 pb-6 pt-5 animate-fadeIn">
+      <div className="relative z-10 flex flex-1 flex-col justify-between gap-5">
+        {/* Status bar: case number + theme switch */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.28em] text-slate-500">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+            </span>
+            <span>{t.caseFile}</span>
+            <span className="text-slate-700">//</span>
+            <span className="text-slate-400">001</span>
           </div>
-          <span className="absolute -top-2 -right-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded-full border border-purple-300/40 shadow-sm">
-            {t.partyGameBadge}
-          </span>
+
+          <button
+            onClick={() => {
+              sound.playClick();
+              onToggleTheme();
+            }}
+            title={settings.darkMode ? t.lightMode : t.darkMode}
+            aria-label={settings.darkMode ? t.lightMode : t.darkMode}
+            className="pressable flex h-9 w-9 items-center justify-center border border-slate-800 bg-slate-900/80 text-slate-400 transition-colors hover:border-purple-500/60 hover:text-white cursor-pointer"
+          >
+            {settings.darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
         </div>
 
+        {/* Title + agent dossier */}
         <div>
-          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white uppercase font-sans">
-            {t.gameTitle}
-          </h1>
-          <p className="text-xs sm:text-sm text-purple-300 font-medium tracking-wide mt-1.5">
-            "{t.subtitle}"
-          </p>
-        </div>
+          <div className="pb-6 pt-1 text-center">
+            <p className="font-mono text-[8px] uppercase tracking-[0.5em] text-purple-400/80">
+              {t.classified} <span className="text-slate-700">//</span> {t.partyGameBadge}
+            </p>
+            <h1 className="mt-2 text-[44px] leading-none font-black uppercase tracking-tighter text-white drop-shadow-[0_0_24px_rgba(168,85,247,0.25)]">
+              {t.gameTitle}
+            </h1>
+            <p className="mx-auto mt-2 max-w-[280px] font-mono text-[10px] leading-relaxed text-slate-500">
+              {t.subtitle}
+            </p>
+          </div>
 
-        {/* Profile chip: opens the profile editor */}
-        <button
-          onClick={() => {
-            sound.playClick();
-            onSelectProfile();
-          }}
-          className="mx-auto flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/80 border border-slate-800 hover:border-purple-500/60 transition cursor-pointer group"
-        >
-          <span className="w-7 h-7 rounded-full bg-purple-950/80 border border-purple-500/30 flex items-center justify-center text-sm shrink-0">
-            {profile.avatar}
-          </span>
-          <span className="text-[11px] font-semibold text-slate-300 group-hover:text-white max-w-[150px] truncate transition">
-            {profile.name.trim() || t.setUpProfile}
-          </span>
-          <Pencil className="w-3 h-3 text-slate-500 group-hover:text-purple-300 transition shrink-0" />
-        </button>
+          {/* Agent ID card — opens the profile editor */}
+          <button
+            onClick={() => {
+              sound.playClick();
+              onSelectProfile();
+            }}
+            className="pressable group relative w-full border border-slate-700/80 bg-slate-900/70 text-left shadow-[0_18px_40px_-24px_rgba(0,0,0,0.9)] backdrop-blur-sm cursor-pointer"
+          >
+            {/* clipped file corner */}
+            <span
+              className="absolute right-0 top-0 h-4 w-4 border-b border-l border-slate-700/80 bg-slate-950"
+              aria-hidden="true"
+            />
 
-        {/* Small live animated preview of the 4-phase game loop */}
-        <div className="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-md flex items-center justify-around text-center text-[10px] font-mono text-slate-400">
-          <div className="flex flex-col items-center gap-1">
-            <Users className="w-4 h-4 text-purple-400" />
-            <span>{t.flowPlayers}</span>
-          </div>
-          <span>→</span>
-          <div className="flex flex-col items-center gap-1">
-            <Eye className="w-4 h-4 text-pink-400" />
-            <span>{t.flowSecret}</span>
-          </div>
-          <span>→</span>
-          <div className="flex flex-col items-center gap-1">
-            <Vote className="w-4 h-4 text-indigo-400" />
-            <span>{t.flowVote}</span>
-          </div>
-          <span>→</span>
-          <div className="flex flex-col items-center gap-1">
-            <Trophy className="w-4 h-4 text-amber-400" />
-            <span>{t.flowVictory}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Play Action Buttons */}
-      <div className="space-y-3.5 my-6">
-        {/* Offline Mode Button */}
-        <button
-          onClick={() => {
-            sound.playClick();
-            onSelectOffline();
-          }}
-          className="w-full p-4.5 rounded-2xl bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:scale-[1.02] active:scale-[0.99] text-white flex items-center justify-between shadow-xl shadow-purple-900/40 border border-purple-400/30 transition-all cursor-pointer group"
-        >
-          <div className="flex items-center gap-3.5 text-left">
-            <div className="w-12 h-12 rounded-xl bg-[#ffffff1a] flex items-center justify-center text-white shrink-0 group-hover:scale-110 transition-transform">
-              <Smartphone className="w-6 h-6" />
-            </div>
-            <div>
-              <span className="text-base font-extrabold uppercase tracking-wide block">
-                {t.playOffline}
+            {/* rubber stamp */}
+            <span className="pointer-events-none absolute -top-3 right-4 -rotate-[8deg]">
+              <span className="animate-stampIn block border-2 border-red-500/70 bg-slate-950 px-2 py-0.5 font-mono text-[9px] font-black uppercase tracking-[0.22em] text-red-500/90 shadow-[0_0_12px_rgba(239,68,68,0.25)]">
+                {t.classified}
               </span>
-              <span className="text-[11px] text-purple-200 block font-normal">
-                {t.offlineFeatureText}
+            </span>
+
+            <div className="flex items-center justify-between border-b border-slate-800 py-2 pl-3.5 pr-16 font-mono text-[8px] uppercase tracking-[0.25em] text-slate-500">
+              <span>{t.agentDossier}</span>
+              <span className="flex items-center gap-1.5 text-emerald-400">
+                <span className="h-1.5 w-1.5 animate-blink rounded-full bg-emerald-400" />
+                {t.statusActive}
               </span>
             </div>
-          </div>
-          <span className="text-lg text-purple-200 group-hover:translate-x-1 transition-transform">
-            →
-          </span>
-        </button>
 
-        {/* Online Multiplayer Mode Button */}
-        <button
-          onClick={() => {
-            sound.playClick();
-            onSelectOnline();
-          }}
-          className="w-full p-4.5 rounded-2xl bg-slate-900/90 hover:bg-slate-800/90 border border-purple-500/30 hover:border-purple-500/60 hover:scale-[1.02] active:scale-[0.99] text-white flex items-center justify-between shadow-lg transition-all cursor-pointer group"
-        >
-          <div className="flex items-center gap-3.5 text-left">
-            <div className="w-12 h-12 rounded-xl bg-purple-950/80 border border-purple-500/30 flex items-center justify-center text-purple-300 shrink-0 group-hover:scale-110 transition-transform">
-              <Globe className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-base font-extrabold uppercase tracking-wide block">
-                  {t.playOnline}
-                </span>
-                <span className="bg-emerald-500/20 text-emerald-400 text-[9px] font-mono px-1.5 py-0.2 rounded border border-emerald-500/30">
-                  {t.liveBadge}
+            <div className="flex gap-3.5 p-3.5">
+              <div className="relative flex h-[88px] w-[72px] shrink-0 items-center justify-center border border-slate-700/80 bg-slate-950 text-3xl">
+                {profile.avatar}
+                <span className="absolute -left-px -top-px h-2 w-2 border-l-2 border-t-2 border-purple-400/90" />
+                <span className="absolute -right-px -top-px h-2 w-2 border-r-2 border-t-2 border-purple-400/90" />
+                <span className="absolute -bottom-px -left-px h-2 w-2 border-b-2 border-l-2 border-purple-400/90" />
+                <span className="absolute -bottom-px -right-px h-2 w-2 border-b-2 border-r-2 border-purple-400/90" />
+                <span className="absolute bottom-1 left-0 right-0 text-center font-mono text-[7px] tracking-[0.18em] text-slate-500">
+                  ID-001
                 </span>
               </div>
-              <span className="text-[11px] text-slate-400 block font-normal">
-                {t.onlineFeatureText}
+
+              <div className="min-w-0 flex-1">
+                <p className="font-mono text-[8px] uppercase tracking-[0.25em] text-purple-400/80">
+                  {t.fieldAgent}
+                </p>
+                <p className="truncate text-xl font-black text-white">{displayName}</p>
+
+                <div className="mt-2.5 space-y-1 font-mono text-[9px]">
+                  <div className="flex items-center justify-between gap-2 border-b border-dashed border-slate-800 pb-1">
+                    <span className="uppercase tracking-widest text-slate-500">{t.clearance}</span>
+                    <span className="uppercase text-slate-200">{difficultyLabel}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="uppercase tracking-widest text-slate-500">{t.language}</span>
+                    <span className="uppercase text-slate-200">{settings.language}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between border-t border-slate-800 px-3.5 py-2 font-mono text-[9px] uppercase tracking-[0.22em] text-slate-500 transition-colors group-hover:text-purple-300">
+              <span className="flex items-center gap-1.5">
+                <Pencil className="h-3 w-3" />
+                {t.editFile}
               </span>
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+            </div>
+          </button>
+        </div>
+
+        {/* Mission select */}
+        <div>
+          <div className="mb-2.5 flex items-center gap-2 font-mono text-[8px] uppercase tracking-[0.3em] text-slate-500">
+            <span className="text-purple-400">//</span>
+            <span>{t.availableMissions}</span>
+            <span className="h-px flex-1 bg-slate-800" />
+          </div>
+
+          <div className="space-y-2.5">
+            <button
+              onClick={() => {
+                sound.playClick();
+                onSelectOffline();
+              }}
+              className="pressable group relative w-full overflow-hidden border border-purple-500/40 bg-gradient-to-r from-purple-600/30 via-violet-600/15 to-slate-900/40 p-3.5 text-left cursor-pointer"
+            >
+              <span className="absolute left-0 top-0 h-full w-0.5 bg-purple-400" />
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-2xl font-black leading-none text-purple-400/50">01</span>
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center border border-purple-400/40 bg-purple-500/10 text-purple-300">
+                  <Smartphone className="h-4 w-4" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-black uppercase tracking-wide text-white">
+                    {t.playOffline}
+                  </span>
+                  <span className="block truncate text-[10px] text-purple-200/70">
+                    {t.offlineFeatureText}
+                  </span>
+                </span>
+                <ArrowRight className="h-4 w-4 text-purple-200/80 transition-transform group-hover:translate-x-1" />
+              </div>
+            </button>
+
+            <button
+              onClick={() => {
+                sound.playClick();
+                onSelectOnline();
+              }}
+              className="pressable group relative w-full overflow-hidden border border-slate-700/80 bg-slate-900/70 p-3.5 text-left transition-colors hover:border-purple-500/50 cursor-pointer"
+            >
+              <span className="absolute left-0 top-0 h-full w-0.5 bg-emerald-400/70" />
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-2xl font-black leading-none text-emerald-400/40">02</span>
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center border border-emerald-400/30 bg-emerald-500/10 text-emerald-300">
+                  <Globe className="h-4 w-4" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-center gap-1.5">
+                    <span className="text-sm font-black uppercase tracking-wide text-white">
+                      {t.playOnline}
+                    </span>
+                    <span className="border border-emerald-500/30 bg-emerald-500/15 px-1.5 py-px font-mono text-[8px] uppercase tracking-widest text-emerald-400">
+                      {t.liveBadge}
+                    </span>
+                  </span>
+                  <span className="block truncate text-[10px] text-slate-400">
+                    {t.onlineFeatureText}
+                  </span>
+                </span>
+                <ArrowRight className="h-4 w-4 text-slate-500 transition-transform group-hover:translate-x-1" />
+              </div>
+            </button>
+          </div>
+        </div>
+
+        {/* Mission phases + field manual */}
+        <div>
+          <div className="border border-slate-800/80 bg-slate-950/50 backdrop-blur-sm">
+            <div className="border-b border-slate-800/80 px-3 py-1.5 font-mono text-[8px] uppercase tracking-[0.3em] text-slate-500">
+              {t.missionPhases}
+            </div>
+            <div className="grid grid-cols-4 divide-x divide-slate-800/70">
+              {phases.map(({ Icon, label, color }, index) => (
+                <div key={label} className="flex flex-col items-center gap-1 py-2.5 text-center">
+                  <span className="font-mono text-[7px] tracking-widest text-slate-600">
+                    0{index + 1}
+                  </span>
+                  <Icon className={`h-3.5 w-3.5 ${color}`} />
+                  <span className="text-[9px] text-slate-400">{label}</span>
+                </div>
+              ))}
             </div>
           </div>
-          <span className="text-lg text-slate-400 group-hover:translate-x-1 transition-transform">
-            →
-          </span>
-        </button>
-      </div>
 
-      {/* Auxiliary Nav Buttons */}
-      <div className="grid grid-cols-4 gap-2 pt-2 border-t border-slate-800/80">
-        <button
-          onClick={() => {
-            sound.playClick();
-            onSelectHowToPlay();
-          }}
-          className="flex flex-col items-center justify-center gap-1 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition cursor-pointer"
-        >
-          <BookOpen className="w-4 h-4 text-purple-400" />
-          <span className="text-[10px] font-medium truncate max-w-full">{t.howToPlay}</span>
-        </button>
-
-        <button
-          onClick={() => {
-            sound.playClick();
-            onSelectStats();
-          }}
-          className="flex flex-col items-center justify-center gap-1 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition cursor-pointer"
-        >
-          <BarChart3 className="w-4 h-4 text-indigo-400" />
-          <span className="text-[10px] font-medium truncate max-w-full">{t.stats}</span>
-        </button>
-
-        <button
-          onClick={() => {
-            sound.playClick();
-            onSelectCustomWords();
-          }}
-          className="flex flex-col items-center justify-center gap-1 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition cursor-pointer"
-        >
-          <BookPlus className="w-4 h-4 text-pink-400" />
-          <span className="text-[10px] font-medium truncate max-w-full">{t.customWords}</span>
-        </button>
-
-        <button
-          onClick={() => {
-            sound.playClick();
-            onSelectSettings();
-          }}
-          className="flex flex-col items-center justify-center gap-1 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition cursor-pointer"
-        >
-          <Settings className="w-4 h-4 text-slate-400" />
-          <span className="text-[10px] font-medium truncate max-w-full">{t.settings}</span>
-        </button>
+          <button
+            onClick={() => {
+              sound.playClick();
+              onSelectHowToPlay();
+            }}
+            className="pressable mt-4 flex w-full items-center justify-center gap-2 border-y border-dashed border-slate-800 py-3 font-mono text-[9px] uppercase tracking-[0.3em] text-slate-500 transition-colors hover:text-slate-200 cursor-pointer"
+          >
+            <BookOpen className="h-3.5 w-3.5 text-purple-400/80" />
+            {t.fieldManual}
+          </button>
+        </div>
       </div>
     </div>
   );
