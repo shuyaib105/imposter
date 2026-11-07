@@ -62,6 +62,37 @@ export default function DeveloperPage({ settings, onBack }: DeveloperPageProps) 
       <div className="space-y-3">
         <div className="border border-purple-500/30 bg-slate-950/60 backdrop-blur-sm">
           <div className="flex items-center gap-2 border-b border-slate-800/80 px-3 py-1.5 font-mono text-[8px] uppercase tracking-[0.3em] text-slate-500">
+            <span className="text-purple-400">// DEV-02</span>
+            <span className="h-px flex-1 bg-slate-800" />
+          </div>
+
+          <p className="flex items-center gap-2 border-b border-slate-800/70 px-3 py-3 text-[11px]">
+            <UserRound className="h-4 w-4 shrink-0 text-purple-400" />
+            <span className="w-16 shrink-0 font-mono text-[9px] uppercase tracking-widest text-slate-500">
+              {t.developerName}
+            </span>
+            <span className="font-bold text-white">Nirob</span>
+          </p>
+
+          <p className="flex items-center gap-2 border-b border-slate-800/70 px-3 py-3 text-[11px]">
+            <Briefcase className="h-4 w-4 shrink-0 text-emerald-400" />
+            <span className="w-16 shrink-0 font-mono text-[9px] uppercase tracking-widest text-slate-500">
+              {t.developerRole}
+            </span>
+            <span className="text-slate-200">{t.roleFounder}</span>
+          </p>
+
+          <p className="flex items-center gap-2 px-3 py-3 text-[11px]">
+            <GraduationCap className="h-4 w-4 shrink-0 text-amber-400" />
+            <span className="w-16 shrink-0 font-mono text-[9px] uppercase tracking-widest text-slate-500">
+              {t.developerDept}
+            </span>
+            <span className="text-slate-200">Civil, KUET</span>
+          </p>
+        </div>
+
+        <div className="border border-slate-800/80 bg-slate-950/60 backdrop-blur-sm">
+          <div className="flex items-center gap-2 border-b border-slate-800/80 px-3 py-1.5 font-mono text-[8px] uppercase tracking-[0.3em] text-slate-500">
             <span className="text-purple-400">// DEV-01</span>
             <span className="h-px flex-1 bg-slate-800" />
           </div>
@@ -128,37 +159,6 @@ export default function DeveloperPage({ settings, onBack }: DeveloperPageProps) 
             </span>
             <span className="min-w-0 flex-1">Shu Yaib</span>
           </a>
-        </div>
-
-        <div className="border border-slate-800/80 bg-slate-950/60 backdrop-blur-sm">
-          <div className="flex items-center gap-2 border-b border-slate-800/80 px-3 py-1.5 font-mono text-[8px] uppercase tracking-[0.3em] text-slate-500">
-            <span className="text-purple-400">// DEV-02</span>
-            <span className="h-px flex-1 bg-slate-800" />
-          </div>
-
-          <p className="flex items-center gap-2 border-b border-slate-800/70 px-3 py-3 text-[11px]">
-            <UserRound className="h-4 w-4 shrink-0 text-purple-400" />
-            <span className="w-16 shrink-0 font-mono text-[9px] uppercase tracking-widest text-slate-500">
-              {t.developerName}
-            </span>
-            <span className="font-bold text-white">Nirob</span>
-          </p>
-
-          <p className="flex items-center gap-2 border-b border-slate-800/70 px-3 py-3 text-[11px]">
-            <Briefcase className="h-4 w-4 shrink-0 text-emerald-400" />
-            <span className="w-16 shrink-0 font-mono text-[9px] uppercase tracking-widest text-slate-500">
-              {t.developerRole}
-            </span>
-            <span className="text-slate-200">{t.roleFounder}</span>
-          </p>
-
-          <p className="flex items-center gap-2 px-3 py-3 text-[11px]">
-            <GraduationCap className="h-4 w-4 shrink-0 text-amber-400" />
-            <span className="w-16 shrink-0 font-mono text-[9px] uppercase tracking-widest text-slate-500">
-              {t.developerDept}
-            </span>
-            <span className="text-slate-200">Civil, KUET</span>
-          </p>
         </div>
       </div>
     </div>
