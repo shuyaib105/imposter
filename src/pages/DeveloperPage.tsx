@@ -50,7 +50,7 @@ export default function DeveloperPage({ settings, onBack }: DeveloperPageProps) 
   };
 
   return (
-    <div className="mx-auto max-w-md px-4 py-6 animate-fadeIn">
+    <div className="mx-auto w-full max-w-2xl px-4 py-6 animate-fadeIn">
       <PageHeader
         title={t.developerSection}
         subtitle={t.developerSubtitle}
