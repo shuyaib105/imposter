@@ -96,6 +96,7 @@ export async function createOnlineRoom(
     round: 1,
     totalVoted: 0,
     revealImposter: false,
+    imposterSuggestion: false,
   };
 
   await setDoc(roomRef, roomData);
@@ -457,4 +458,9 @@ export async function setOnlineRoomCategories(roomCode: string, categories: stri
 /** Host toggle: should the imposter be told their role during the reveal? */
 export async function setOnlineRoomRevealImposter(roomCode: string, revealImposter: boolean) {
   await updateDoc(doc(db, 'rooms', roomCode), { revealImposter });
+}
+
+/** Host toggle: should the imposter also see the crew word as a suggestion? */
+export async function setOnlineRoomImposterSuggestion(roomCode: string, imposterSuggestion: boolean) {
+  await updateDoc(doc(db, 'rooms', roomCode), { imposterSuggestion });
 }

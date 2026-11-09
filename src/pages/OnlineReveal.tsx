@@ -4,7 +4,7 @@ import { TRANSLATIONS } from '../data/translations';
 import { sound } from '../utils/sound';
 import { advanceToDiscussion } from '../services/onlineEngine';
 import AgentAvatar from '../components/AgentAvatar';
-import { Eye, EyeOff, ShieldCheck, ArrowRight, AlertTriangle, ShieldAlert } from 'lucide-react';
+import { Eye, EyeOff, ShieldCheck, ArrowRight, AlertTriangle, ShieldAlert, Lightbulb } from 'lucide-react';
 
 interface OnlineRevealProps {
   settings: GameSettings;
@@ -34,6 +34,13 @@ export default function OnlineReveal({
   const [errorMsg, setErrorMsg] = useState('');
   const [isAdvancing, setIsAdvancing] = useState(false);
   const showImposterWarning = !!revealImposter && isImposter;
+  const suggestionPrimary =
+    settings.language === 'bn'
+      ? roomData.majorityWordBn || roomData.majorityWord || ''
+      : roomData.majorityWord || '';
+  const suggestionAlt =
+    settings.language === 'bn' ? roomData.majorityWord || '' : roomData.majorityWordBn || '';
+  const showSuggestion = isImposter && !!roomData.imposterSuggestion && !!suggestionPrimary;
 
   // 5s Countdown
   useEffect(() => {
@@ -173,6 +180,24 @@ export default function OnlineReveal({
                 <span className="block mt-1.5 text-base font-semibold text-slate-400 font-bangla">
                   {secretWordAlt}
                 </span>
+              )}
+
+              {showSuggestion && (
+                <div className="mt-4 rounded-xl border border-amber-500/40 bg-amber-950/30 px-3 py-2">
+                  <span className="flex items-center justify-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.2em] text-amber-300">
+                    <Lightbulb className="h-3 w-3" />
+                    {t.crewSuggestionLabel}
+                  </span>
+                  <span className="mt-0.5 block text-lg font-black text-amber-100">
+                    {suggestionPrimary}
+                  </span>
+                  {suggestionAlt && suggestionAlt !== suggestionPrimary && (
+                    <span className="block text-xs font-semibold text-amber-200/70 font-bangla">
+                      {suggestionAlt}
+                    </span>
+                  )}
+                  <p className="mt-0.5 text-[10px] text-amber-200/60">{t.crewSuggestionHint}</p>
+                </div>
               )}
             </div>
 

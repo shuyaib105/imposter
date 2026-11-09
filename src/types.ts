@@ -108,6 +108,8 @@ export interface OnlineRoomData {
   difficulty: GameDifficulty;
   /** When true, the imposter is told their role during the word reveal. */
   revealImposter?: boolean;
+  /** When true, the imposter also sees the crew word as a suggestion at reveal. */
+  imposterSuggestion?: boolean;
   round: number;
   majorityWord?: string;
   imposterWord?: string;

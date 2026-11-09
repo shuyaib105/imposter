@@ -13,6 +13,7 @@ import {
   removePlayerFromRoom,
   setOnlineRoomCategories,
   setOnlineRoomRevealImposter,
+  setOnlineRoomImposterSuggestion,
 } from '../services/onlineEngine';
 import {
   Copy,
@@ -27,6 +28,7 @@ import {
   Sparkles,
   UserX,
   Eye,
+  Lightbulb,
 } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 
@@ -52,6 +54,7 @@ export default function OnlineLobby({
   const [isStarting, setIsStarting] = useState(false);
   const [isChangingCategory, setIsChangingCategory] = useState(false);
   const [isTogglingReveal, setIsTogglingReveal] = useState(false);
+  const [isTogglingSuggestion, setIsTogglingSuggestion] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [confirmKickId, setConfirmKickId] = useState<string | null>(null);
 
@@ -163,6 +166,21 @@ export default function OnlineLobby({
       setErrorMsg(t.genericError);
     } finally {
       setIsTogglingReveal(false);
+    }
+  };
+
+  const handleToggleImposterSuggestion = async () => {
+    if (!isHost || isTogglingSuggestion) return;
+    sound.playClick();
+    try {
+      setIsTogglingSuggestion(true);
+      setErrorMsg('');
+      await setOnlineRoomImposterSuggestion(roomData.id, !roomData.imposterSuggestion);
+    } catch (err) {
+      console.error(err);
+      setErrorMsg(t.genericError);
+    } finally {
+      setIsTogglingSuggestion(false);
     }
   };
 
@@ -340,6 +358,48 @@ export default function OnlineLobby({
                 }`}
               >
                 {roomData.revealImposter ? t.toggleOn : t.toggleOff}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Optional mode: the imposter also sees the crew word as a hint */}
+        <div className="pt-2 border-t border-slate-800/60">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-start gap-2 text-left">
+              <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
+              <div>
+                <span className="block text-[10px] font-mono uppercase tracking-wider text-amber-300">
+                  {t.imposterSuggestionMode}
+                </span>
+                <p className="mt-0.5 text-[10px] leading-snug text-slate-500">
+                  {t.imposterSuggestionHint}
+                </p>
+              </div>
+            </div>
+            {isHost ? (
+              <button
+                type="button"
+                onClick={handleToggleImposterSuggestion}
+                disabled={isTogglingSuggestion || isStarting}
+                aria-pressed={!!roomData.imposterSuggestion}
+                className={`shrink-0 rounded-lg border px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider transition cursor-pointer disabled:opacity-60 ${
+                  roomData.imposterSuggestion
+                    ? 'border-amber-500/60 bg-amber-600/30 text-amber-200'
+                    : 'border-slate-700 bg-slate-950 text-slate-500 hover:text-slate-300'
+                }`}
+              >
+                {roomData.imposterSuggestion ? t.toggleOn : t.toggleOff}
+              </button>
+            ) : (
+              <span
+                className={`shrink-0 rounded-lg border px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider ${
+                  roomData.imposterSuggestion
+                    ? 'border-amber-500/50 bg-amber-950/60 text-amber-200'
+                    : 'border-slate-800 bg-slate-950/60 text-slate-500'
+                }`}
+              >
+                {roomData.imposterSuggestion ? t.toggleOn : t.toggleOff}
               </span>
             )}
           </div>
